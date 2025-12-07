@@ -9,3 +9,9 @@ uv run mixer_spur_sweep.py --fsw "TCPIP::192.168.0.77::HISLIP" --smbv "TCPIP::19
 # Replot run example
 
 uv run mixer_spur_replot.py --in-dir ltc5553_5p83g_if_sweep_950m_to_2p45g --master-csv ltc5553_5p83g_if_sweep_master.csv --plot-png ltc5553_5p83g_if_sweep_spurs_improved.png
+
+# Spur Mismeasurement Post Check run example
+
+uv run spur_spike_analyzer.py --master ltc5553_5p83g_if_sweep_950m_to_2p45g/ltc5553_5p83g_if_sweep_master.csv --report ltc5553_5p83g_if_sweep_950m_to_2p45g/ltc5553_5p83g_spike_report.txt
+
+

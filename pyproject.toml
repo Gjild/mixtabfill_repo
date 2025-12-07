@@ -8,5 +8,6 @@ dependencies = [
     "matplotlib>=3.10.7",
     "pandas>=2.3.3",
     "rsfsw>=6.0.0",
+    "rssmab>=5.30.133",
     "rssmbv>=5.30.48",
 ]

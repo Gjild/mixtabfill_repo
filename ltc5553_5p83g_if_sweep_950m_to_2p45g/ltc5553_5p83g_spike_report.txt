@@ -1,0 +1,366 @@
+Spur mismeasurement analysis report
+===================================
+
+Master CSV: ltc5553_5p83g_if_sweep_950m_to_2p45g\ltc5553_5p83g_if_sweep_master.csv
+Total suspected mismeasurements: 24
+
+Case 1:
+  IF: 1850.000 MHz
+  Suspected mismeasured spur:
+    branch: kind=spur, m=1, n=5, sign=-1
+    expression: "1*LO - 5*IF"
+    measured_freq: 3.700001 GHz
+    expected_freq: 3.700000 GHz
+    rel_dBc: -0.30 dBc (deviation from this spur's median: +95.10 dB)
+    local jump vs neighbors: +95.09 dB
+  Likely true spur measured instead:
+    branch: kind=image, m=1, n=1, sign=-1
+    expression: "1*LO - 1*IF"
+    measured_freq: 3.700001 GHz
+    expected_freq: 3.700000 GHz
+    rel_dBc: -0.30 dBc (deviation from this spur's median: -0.41 dB)
+Case 2:
+  IF: 1850.000 MHz
+  Suspected mismeasured spur:
+    branch: kind=spur, m=1, n=4, sign=-1
+    expression: "1*LO - 4*IF"
+    measured_freq: 1.849999 GHz
+    expected_freq: 1.850000 GHz
+    rel_dBc: -38.61 dBc (deviation from this spur's median: +50.51 dB)
+    local jump vs neighbors: +50.94 dB
+  Likely true spur measured instead:
+    branch: kind=IF_leak, m=0, n=1, sign=1
+    expression: "0*LO + 1*IF"
+    measured_freq: 1.849999 GHz
+    expected_freq: 1.850000 GHz
+    rel_dBc: -38.60 dBc (deviation from this spur's median: -1.61 dB)
+Case 3:
+  IF: 1850.000 MHz
+  Suspected mismeasured spur:
+    branch: kind=IF_harmonic, m=0, n=2, sign=1
+    expression: "0*LO + 2*IF"
+    measured_freq: 3.700001 GHz
+    expected_freq: 3.700000 GHz
+    rel_dBc: -0.30 dBc (deviation from this spur's median: +64.54 dB)
+    local jump vs neighbors: +62.46 dB
+  Likely true spur measured instead:
+    branch: kind=image, m=1, n=1, sign=-1
+    expression: "1*LO - 1*IF"
+    measured_freq: 3.700001 GHz
+    expected_freq: 3.700000 GHz
+    rel_dBc: -0.30 dBc (deviation from this spur's median: -0.41 dB)
+Case 4:
+  IF: 1850.000 MHz
+  Suspected mismeasured spur:
+    branch: kind=IF_harmonic, m=0, n=3, sign=1
+    expression: "0*LO + 3*IF"
+    measured_freq: 5.550000 GHz
+    expected_freq: 5.550000 GHz
+    rel_dBc: -17.77 dBc (deviation from this spur's median: +64.44 dB)
+    local jump vs neighbors: +60.98 dB
+  Likely true spur measured instead:
+    branch: kind=LO_leak, m=1, n=0, sign=1
+    expression: "1*LO + 0*IF"
+    measured_freq: 5.550000 GHz
+    expected_freq: 5.550000 GHz
+    rel_dBc: -17.77 dBc (deviation from this spur's median: -0.04 dB)
+Case 5:
+  IF: 1850.000 MHz
+  Suspected mismeasured spur:
+    branch: kind=IF_harmonic, m=0, n=4, sign=1
+    expression: "0*LO + 4*IF"
+    measured_freq: 7.399999 GHz
+    expected_freq: 7.400000 GHz
+    rel_dBc: 0.02 dBc (deviation from this spur's median: +96.58 dB)
+    local jump vs neighbors: +98.18 dB
+  Likely true spur measured instead:
+    branch: kind=desired, m=1, n=1, sign=1
+    expression: "1*LO + 1*IF"
+    measured_freq: 7.399999 GHz
+    expected_freq: 7.400000 GHz
+    rel_dBc: 0.00 dBc (deviation from this spur's median: +0.00 dB)
+Case 6:
+  IF: 1850.000 MHz
+  Suspected mismeasured spur:
+    branch: kind=IF_harmonic, m=0, n=5, sign=1
+    expression: "0*LO + 5*IF"
+    measured_freq: 9.250001 GHz
+    expected_freq: 9.250000 GHz
+    rel_dBc: -36.81 dBc (deviation from this spur's median: +57.77 dB)
+    local jump vs neighbors: +56.88 dB
+  Likely true spur measured instead:
+    branch: kind=spur, m=2, n=1, sign=-1
+    expression: "2*LO - 1*IF"
+    measured_freq: 9.250001 GHz
+    expected_freq: 9.250000 GHz
+    rel_dBc: -36.81 dBc (deviation from this spur's median: +0.77 dB)
+Case 7:
+  IF: 1850.000 MHz
+  Suspected mismeasured spur:
+    branch: kind=spur, m=2, n=5, sign=-1
+    expression: "2*LO - 5*IF"
+    measured_freq: 1.849999 GHz
+    expected_freq: 1.850000 GHz
+    rel_dBc: -38.61 dBc (deviation from this spur's median: +56.41 dB)
+    local jump vs neighbors: +56.31 dB
+  Likely true spur measured instead:
+    branch: kind=IF_leak, m=0, n=1, sign=1
+    expression: "0*LO + 1*IF"
+    measured_freq: 1.849999 GHz
+    expected_freq: 1.850000 GHz
+    rel_dBc: -38.60 dBc (deviation from this spur's median: -1.61 dB)
+Case 8:
+  IF: 1850.000 MHz
+  Suspected mismeasured spur:
+    branch: kind=spur, m=2, n=4, sign=-1
+    expression: "2*LO - 4*IF"
+    measured_freq: 3.700001 GHz
+    expected_freq: 3.700000 GHz
+    rel_dBc: -0.31 dBc (deviation from this spur's median: +95.48 dB)
+    local jump vs neighbors: +94.78 dB
+  Likely true spur measured instead:
+    branch: kind=image, m=1, n=1, sign=-1
+    expression: "1*LO - 1*IF"
+    measured_freq: 3.700001 GHz
+    expected_freq: 3.700000 GHz
+    rel_dBc: -0.30 dBc (deviation from this spur's median: -0.41 dB)
+Case 9:
+  IF: 1850.000 MHz
+  Suspected mismeasured spur:
+    branch: kind=spur, m=2, n=3, sign=-1
+    expression: "2*LO - 3*IF"
+    measured_freq: 5.550000 GHz
+    expected_freq: 5.550000 GHz
+    rel_dBc: -17.77 dBc (deviation from this spur's median: +65.82 dB)
+    local jump vs neighbors: +61.33 dB
+  Likely true spur measured instead:
+    branch: kind=LO_leak, m=1, n=0, sign=1
+    expression: "1*LO + 0*IF"
+    measured_freq: 5.550000 GHz
+    expected_freq: 5.550000 GHz
+    rel_dBc: -17.77 dBc (deviation from this spur's median: -0.04 dB)
+Case 10:
+  IF: 1850.000 MHz
+  Suspected mismeasured spur:
+    branch: kind=spur, m=1, n=3, sign=1
+    expression: "1*LO + 3*IF"
+    measured_freq: 11.100000 GHz
+    expected_freq: 11.100000 GHz
+    rel_dBc: -8.64 dBc (deviation from this spur's median: +51.70 dB)
+    local jump vs neighbors: +52.97 dB
+  Likely true spur measured instead:
+    branch: kind=LO_harmonic, m=2, n=0, sign=1
+    expression: "2*LO + 0*IF"
+    measured_freq: 11.100000 GHz
+    expected_freq: 11.100000 GHz
+    rel_dBc: -8.64 dBc (deviation from this spur's median: -0.11 dB)
+Case 11:
+  IF: 1850.000 MHz
+  Suspected mismeasured spur:
+    branch: kind=spur, m=2, n=2, sign=-1
+    expression: "2*LO - 2*IF"
+    measured_freq: 7.399999 GHz
+    expected_freq: 7.400000 GHz
+    rel_dBc: 0.02 dBc (deviation from this spur's median: +59.24 dB)
+    local jump vs neighbors: +58.24 dB
+  Likely true spur measured instead:
+    branch: kind=desired, m=1, n=1, sign=1
+    expression: "1*LO + 1*IF"
+    measured_freq: 7.399999 GHz
+    expected_freq: 7.400000 GHz
+    rel_dBc: 0.00 dBc (deviation from this spur's median: +0.00 dB)
+Case 12:
+  IF: 1850.000 MHz
+  Suspected mismeasured spur:
+    branch: kind=spur, m=1, n=4, sign=1
+    expression: "1*LO + 4*IF"
+    measured_freq: 12.949999 GHz
+    expected_freq: 12.950000 GHz
+    rel_dBc: -37.12 dBc (deviation from this spur's median: +48.44 dB)
+    local jump vs neighbors: +52.20 dB
+  Likely true spur measured instead:
+    branch: kind=spur, m=2, n=1, sign=1
+    expression: "2*LO + 1*IF"
+    measured_freq: 12.949999 GHz
+    expected_freq: 12.950000 GHz
+    rel_dBc: -37.12 dBc (deviation from this spur's median: +0.98 dB)
+Case 13:
+  IF: 1850.000 MHz
+  Suspected mismeasured spur:
+    branch: kind=spur, m=1, n=5, sign=1
+    expression: "1*LO + 5*IF"
+    measured_freq: 14.800001 GHz
+    expected_freq: 14.800000 GHz
+    rel_dBc: -12.73 dBc (deviation from this spur's median: +79.65 dB)
+    local jump vs neighbors: +79.91 dB
+  Likely true spur measured instead:
+    branch: kind=spur, m=3, n=1, sign=-1
+    expression: "3*LO - 1*IF"
+    measured_freq: 14.800001 GHz
+    expected_freq: 14.800000 GHz
+    rel_dBc: -12.73 dBc (deviation from this spur's median: +0.70 dB)
+Case 14:
+  IF: 1850.000 MHz
+  Suspected mismeasured spur:
+    branch: kind=spur, m=3, n=5, sign=-1
+    expression: "3*LO - 5*IF"
+    measured_freq: 7.399999 GHz
+    expected_freq: 7.400000 GHz
+    rel_dBc: 0.01 dBc (deviation from this spur's median: +95.22 dB)
+    local jump vs neighbors: +97.89 dB
+  Likely true spur measured instead:
+    branch: kind=desired, m=1, n=1, sign=1
+    expression: "1*LO + 1*IF"
+    measured_freq: 7.399999 GHz
+    expected_freq: 7.400000 GHz
+    rel_dBc: 0.00 dBc (deviation from this spur's median: +0.00 dB)
+Case 15:
+  IF: 1850.000 MHz
+  Suspected mismeasured spur:
+    branch: kind=spur, m=3, n=4, sign=-1
+    expression: "3*LO - 4*IF"
+    measured_freq: 9.250001 GHz
+    expected_freq: 9.250000 GHz
+    rel_dBc: -36.81 dBc (deviation from this spur's median: +56.00 dB)
+    local jump vs neighbors: +56.98 dB
+  Likely true spur measured instead:
+    branch: kind=spur, m=2, n=1, sign=-1
+    expression: "2*LO - 1*IF"
+    measured_freq: 9.250001 GHz
+    expected_freq: 9.250000 GHz
+    rel_dBc: -36.81 dBc (deviation from this spur's median: +0.77 dB)
+Case 16:
+  IF: 1850.000 MHz
+  Suspected mismeasured spur:
+    branch: kind=spur, m=2, n=2, sign=1
+    expression: "2*LO + 2*IF"
+    measured_freq: 14.800001 GHz
+    expected_freq: 14.800000 GHz
+    rel_dBc: -12.73 dBc (deviation from this spur's median: +52.29 dB)
+    local jump vs neighbors: +48.69 dB
+  Likely true spur measured instead:
+    branch: kind=spur, m=3, n=1, sign=-1
+    expression: "3*LO - 1*IF"
+    measured_freq: 14.800001 GHz
+    expected_freq: 14.800000 GHz
+    rel_dBc: -12.73 dBc (deviation from this spur's median: +0.70 dB)
+Case 17:
+  IF: 1850.000 MHz
+  Suspected mismeasured spur:
+    branch: kind=spur, m=3, n=3, sign=-1
+    expression: "3*LO - 3*IF"
+    measured_freq: 11.100000 GHz
+    expected_freq: 11.100000 GHz
+    rel_dBc: -8.64 dBc (deviation from this spur's median: +65.58 dB)
+    local jump vs neighbors: +64.44 dB
+  Likely true spur measured instead:
+    branch: kind=LO_harmonic, m=2, n=0, sign=1
+    expression: "2*LO + 0*IF"
+    measured_freq: 11.100000 GHz
+    expected_freq: 11.100000 GHz
+    rel_dBc: -8.64 dBc (deviation from this spur's median: -0.11 dB)
+Case 18:
+  IF: 1850.000 MHz
+  Suspected mismeasured spur:
+    branch: kind=spur, m=2, n=3, sign=1
+    expression: "2*LO + 3*IF"
+    measured_freq: 16.650000 GHz
+    expected_freq: 16.650000 GHz
+    rel_dBc: -21.89 dBc (deviation from this spur's median: +65.45 dB)
+    local jump vs neighbors: +61.05 dB
+  Likely true spur measured instead:
+    branch: kind=LO_harmonic, m=3, n=0, sign=1
+    expression: "3*LO + 0*IF"
+    measured_freq: 16.650000 GHz
+    expected_freq: 16.650000 GHz
+    rel_dBc: -21.90 dBc (deviation from this spur's median: -0.18 dB)
+Case 19:
+  IF: 1850.000 MHz
+  Suspected mismeasured spur:
+    branch: kind=spur, m=2, n=4, sign=1
+    expression: "2*LO + 4*IF"
+    measured_freq: 18.499999 GHz
+    expected_freq: 18.500000 GHz
+    rel_dBc: -14.92 dBc (deviation from this spur's median: +77.66 dB)
+    local jump vs neighbors: +77.20 dB
+  Likely true spur measured instead:
+    branch: kind=spur, m=3, n=1, sign=1
+    expression: "3*LO + 1*IF"
+    measured_freq: 18.499999 GHz
+    expected_freq: 18.500000 GHz
+    rel_dBc: -14.92 dBc (deviation from this spur's median: +0.97 dB)
+Case 20:
+  IF: 1850.000 MHz
+  Suspected mismeasured spur:
+    branch: kind=spur, m=4, n=5, sign=-1
+    expression: "4*LO - 5*IF"
+    measured_freq: 12.949999 GHz
+    expected_freq: 12.950000 GHz
+    rel_dBc: -37.12 dBc (deviation from this spur's median: +55.85 dB)
+    local jump vs neighbors: +55.26 dB
+  Likely true spur measured instead:
+    branch: kind=spur, m=2, n=1, sign=1
+    expression: "2*LO + 1*IF"
+    measured_freq: 12.949999 GHz
+    expected_freq: 12.950000 GHz
+    rel_dBc: -37.12 dBc (deviation from this spur's median: +0.98 dB)
+Case 21:
+  IF: 1850.000 MHz
+  Suspected mismeasured spur:
+    branch: kind=spur, m=4, n=4, sign=-1
+    expression: "4*LO - 4*IF"
+    measured_freq: 14.800001 GHz
+    expected_freq: 14.800000 GHz
+    rel_dBc: -12.73 dBc (deviation from this spur's median: +80.04 dB)
+    local jump vs neighbors: +80.13 dB
+  Likely true spur measured instead:
+    branch: kind=spur, m=3, n=1, sign=-1
+    expression: "3*LO - 1*IF"
+    measured_freq: 14.800001 GHz
+    expected_freq: 14.800000 GHz
+    rel_dBc: -12.73 dBc (deviation from this spur's median: +0.70 dB)
+Case 22:
+  IF: 1850.000 MHz
+  Suspected mismeasured spur:
+    branch: kind=spur, m=4, n=3, sign=-1
+    expression: "4*LO - 3*IF"
+    measured_freq: 16.650000 GHz
+    expected_freq: 16.650000 GHz
+    rel_dBc: -21.90 dBc (deviation from this spur's median: +62.65 dB)
+    local jump vs neighbors: +59.68 dB
+  Likely true spur measured instead:
+    branch: kind=LO_harmonic, m=3, n=0, sign=1
+    expression: "3*LO + 0*IF"
+    measured_freq: 16.650000 GHz
+    expected_freq: 16.650000 GHz
+    rel_dBc: -21.90 dBc (deviation from this spur's median: -0.18 dB)
+Case 23:
+  IF: 1850.000 MHz
+  Suspected mismeasured spur:
+    branch: kind=spur, m=4, n=2, sign=-1
+    expression: "4*LO - 2*IF"
+    measured_freq: 18.499999 GHz
+    expected_freq: 18.500000 GHz
+    rel_dBc: -14.92 dBc (deviation from this spur's median: +50.89 dB)
+    local jump vs neighbors: +49.96 dB
+  Likely true spur measured instead:
+    branch: kind=spur, m=3, n=1, sign=1
+    expression: "3*LO + 1*IF"
+    measured_freq: 18.499999 GHz
+    expected_freq: 18.500000 GHz
+    rel_dBc: -14.92 dBc (deviation from this spur's median: +0.97 dB)
+Case 24:
+  IF: 1850.000 MHz
+  Suspected mismeasured spur:
+    branch: kind=spur, m=5, n=5, sign=-1
+    expression: "5*LO - 5*IF"
+    measured_freq: 18.499999 GHz
+    expected_freq: 18.500000 GHz
+    rel_dBc: -14.92 dBc (deviation from this spur's median: +77.25 dB)
+    local jump vs neighbors: +77.68 dB
+  Likely true spur measured instead:
+    branch: kind=spur, m=3, n=1, sign=1
+    expression: "3*LO + 1*IF"
+    measured_freq: 18.499999 GHz
+    expected_freq: 18.500000 GHz
+    rel_dBc: -14.92 dBc (deviation from this spur's median: +0.97 dB)
