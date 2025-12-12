@@ -263,37 +263,49 @@ def make_spur_plot(
 
     # Invert y-axis so "better" (more negative) spurs are downwards
     if all_dbc:
-        y_min = min(all_dbc)
-        y_max = max(all_dbc)
-        y_margin = 0.05 * (y_max - y_min or 1.0)
+        #y_min = min(all_dbc)
+        #y_max = max(all_dbc)
+        y_min = -120
+        y_max = 0
+        #y_margin = 0.05 * (y_max - y_min or 1.0)
+        y_margin = 0
         ax.set_ylim(y_min - y_margin, y_max + y_margin)
+        ax.set_yticks(range(int(y_min), int(y_max) + 1, 10))
         ax.invert_yaxis()
     else:
         ax.invert_yaxis()
+    
+    # Set x-axis to log scale
+    #ax.set_xscale("log")
 
     # Set plot title from run info
-    title = extract_run_info(rows)
+    #title = extract_run_info(rows)
+    title = "HMC329 - Mode: IF + LO 23 GHz - IF 6.5 GHz to 8.0 GHz"
     ax.set_title(title)
 
     # Tighten x-limits a bit
     if all_freqs:
-        x_min = min(all_freqs)
-        x_max = max(all_freqs)
+        x_min = 25
+        x_max = 35
+        #x_min = min(all_freqs)
+        #x_max = max(all_freqs)
         x_margin = 0.02 * (x_max - x_min or 1.0)
         ax.set_xlim(x_min - x_margin, x_max + x_margin)
+        ax.set_xticks(range(int(x_min), int(x_max) + 1, 1))
 
     # Legend outside to the right
     legend_fontsize = 8 if len(sorted_exprs) > 10 else 9
 
     # Reserve space on the right for the legend with tight_layout
-    fig.tight_layout(rect=(0.0, 0.0, 0.75, 1.0))
+    fig.tight_layout(rect=(0.0, 0.0, 0.88, 1.0))
 
     ax.legend(
         loc="center left",
         bbox_to_anchor=(1.02, 0.5),
         borderaxespad=0.0,
         fontsize=legend_fontsize,
-        title="Spur expression",
+        title="Spur Expression",
+        #ncol=2
     )
 
     fig.savefig(out_path, dpi=200)

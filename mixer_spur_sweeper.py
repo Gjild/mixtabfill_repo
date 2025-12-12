@@ -1,40 +1,42 @@
 #!/usr/bin/env python3
 """
-2D LO/IF mixer spur sweep for R&S FSW + SMBV100A + SMA100B
+Extended 2D LO/IF mixer spur sweep for R&S FSW + SMF100A + SMA100B
 
-- Controls:
-    * R&S SMBV100A CW generator as IF source
-    * R&S SMA100B CW generator as LO source
+Implements:
+    - Full spur list without de-duplication
+    - Analytic coincidence groups (expected frequencies vs RBW)
+    - Cluster detection (connected components using realistic contamination limits)
+    - Per-point Δf correction from desired product (order-aware weighting)
+    - Cluster-based trace measurement and software peak assignment
+    - Measured coincidence grouping (based on measured frequencies)
+    - Extended CSV topology fields
+    - Extra metadata for cluster searches (window size, fallback used)
+
+Controls:
+    * R&S SMF100A CW generator as LO source
+    * R&S SMA100B CW generator as IF source
     * R&S FSW spectrum analyzer for spur measurements
-- Sweeps LO and IF according to user-defined ranges
-- For each (LO, IF) point:
-    * Sets SMA100B LO frequency + level
-    * Sets SMBV100A IF frequency + level
-    * Runs a narrow-span spur scan on the FSW
-    * Writes a per-point spur CSV (optional)
-- After the sweep:
-    * Aggregates all spur results into one master CSV (written directly from memory)
-    * (Optional) runs spur overlap detection and remeasurement pass
 
-Plotting has been intentionally omitted; only CSV output is generated.
+Sweeps LO and IF according to user-defined ranges and writes:
+    * Optional per-(LO,IF) CSVs
+    * One master CSV aggregated from memory
 
 Requires:
-    pip install RsFsw RsSmbv RsSmab
+    pip install RsFsw RsSmab RsInstrument
 """
 
 import argparse
 import csv
+import json
 import math
 import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Any
 
-import statistics
-
 from RsFsw import RsFsw, enums as fsw_enums, repcap
-from RsSmbv import RsSmbv, enums as smbv_enums
 from RsSmab import RsSmab, enums as smab_enums
+from RsInstrument import RsInstrument
 
 
 # ---------------------------------------------------------------------------
@@ -43,14 +45,26 @@ from RsSmab import RsSmab, enums as smab_enums
 
 @dataclass
 class SpurDef:
-    """Definition of a mixer product to be measured."""
+    """Definition of a mixer product to be measured (per (LO, IF) point)."""
     kind: str            # "desired", "image", "LO_leak", "LO_harmonic",
                          # "IF_leak", "IF_harmonic", "spur"
     m: int
     n: int
     sign: int            # +1 or -1 for ±n·IF
     expression: str      # e.g. "1*LO - 2*IF"
+
+    # Frequency model (from calibrated / readback LO/IF)
     expected_freq_hz: float
+
+    # Topology fields (per (LO, IF) point)
+    cluster_id: int = -1
+    cluster_size: int = 1
+
+    analytic_coincidence_id: int = -1
+    analytic_coincidence_size: int = 1
+
+    # After per-point Δf correction from desired product
+    expected_corr_freq_hz: float = 0.0
 
 
 @dataclass
@@ -61,35 +75,69 @@ class SpurResult:
     n: int
     sign: int
     expression: str
-    expected_freq_hz: float
+
+    expected_freq_hz: float           # analytic model (calibrated)
+    expected_corr_freq_hz: float      # per-point corrected value
+
     measured_freq_hz: float
     power_dbm: float
-    rel_dbc: Optional[float]        # 0.0 for desired, None if measurement failed
-    error: Optional[str] = None     # Error message if measurement failed
-    noise_limited: bool = False     # True if flagged as noise-limited
+    rel_dbc: Optional[float]          # 0.0 for desired, None if measurement failed
+
+    error: Optional[str] = None
+    noise_limited: bool = False
+
+    # Topology (copied from SpurDef at measurement time)
+    cluster_id: int = -1
+    cluster_size: int = 1
+
+    analytic_coincidence_id: int = -1
+    analytic_coincidence_size: int = 1
+
+    measured_coincidence_id: int = -1
+    measured_coincidence_size: int = 1
+
+    # "single"  - measure_single_tone()
+    # "cluster" - derived from shared cluster trace
+    measurement_scope: str = "single"
+
+    # Cluster-search diagnostics (only meaningful for measurement_scope == "cluster")
+    cluster_window_half_width_hz: float = 0.0
+    cluster_window_fallback: bool = False
 
 
 # ---------------------------------------------------------------------------
 # Utility functions shared by all measurements
 # ---------------------------------------------------------------------------
 
+def dbm_to_mw(p_dbm: float) -> float:
+    return 10.0 ** (p_dbm / 10.0)
+
+
+def mw_to_dbm(p_mw: float) -> float:
+    if p_mw <= 0.0:
+        return float("-inf")
+    return 10.0 * math.log10(p_mw)
+
+
 def dbm_list_to_avg_dbm(powers_dbm: List[float]) -> float:
     """Average in linear (mW), return in dBm."""
     if not powers_dbm:
         return float("nan")
-    lin_mw = [10.0 ** (p / 10.0) for p in powers_dbm]
+    lin_mw = [dbm_to_mw(p) for p in powers_dbm]
     avg_mw = sum(lin_mw) / len(lin_mw)
-    return 10.0 * math.log10(avg_mw)
+    return mw_to_dbm(avg_mw)
 
 
 def _dedupe_spurs_by_freq(spurs: List[SpurDef], dedupe_hz: float) -> List[SpurDef]:
     """
-    Optional frequency de-duplication.
+    Optional frequency de-duplication (NOT used in the main measurement path).
 
     If dedupe_hz > 0, group spurs into frequency bins of width dedupe_hz and keep
     a single representative in each bin, preferring more 'important' kinds:
 
         desired > image > leakage > harmonics > spur
+
+    Kept for debugging / summaries only.
     """
     if dedupe_hz is None or dedupe_hz <= 0.0:
         return spurs
@@ -125,12 +173,15 @@ def build_spur_list(
     desired_mode: str,
     f_min_hz: float,
     f_max_hz: float,
-    dedupe_hz: float = 0.0,
 ) -> List[SpurDef]:
     """
     Build list of mixer products m·LO ± n·IF within [f_min, f_max].
 
     desired_mode: "lo+if" or "lo-if" (desired product is 1*LO ± 1*IF).
+
+    IMPORTANT:
+        - No frequency de-duplication in the main measurement path.
+        - All distinct (kind, m, n, sign, expression) entries are kept.
     """
     spur_list: List[SpurDef] = []
 
@@ -153,6 +204,7 @@ def build_spur_list(
                 sign=desired_sign,
                 expression=f"1*LO {'+' if desired_sign > 0 else '-'} 1*IF",
                 expected_freq_hz=f_desired,
+                expected_corr_freq_hz=f_desired,
             )
         )
 
@@ -201,11 +253,9 @@ def build_spur_list(
                         sign=sign,
                         expression=expr,
                         expected_freq_hz=freq,
+                        expected_corr_freq_hz=freq,
                     )
                 )
-
-    # Optional de-duplication by frequency
-    spur_list = _dedupe_spurs_by_freq(spur_list, dedupe_hz)
 
     # Sort by expected frequency
     spur_list.sort(key=lambda s: s.expected_freq_hz)
@@ -228,28 +278,26 @@ def configure_span_and_bw(
 ) -> None:
     """
     Set frequency span and RBW/VBW around a given center frequency.
+
     Uses start/stop so it works even if center/span are not used in your current setup.
 
     Enforces:
         span_hz >= 1 Hz
         rbw_hz  >= 1 Hz
     """
-    # Clamp to sensible minimums
     span_hz = max(span_hz, 1.0)
     rbw_hz = max(rbw_hz, 1.0)
 
     f_start = max(center_hz - span_hz / 2.0, 0.0)
     f_stop = center_hz + span_hz / 2.0
 
-    fsw.sense.frequency.start.set(f_start)  # SENSe:FREQuency:STARt
-    fsw.sense.frequency.stop.set(f_stop)    # SENSe:FREQuency:STOP
+    fsw.sense.frequency.start.set(f_start)
+    fsw.sense.frequency.stop.set(f_stop)
 
-    # RBW
-    fsw.sense.bandwidth.resolution.set(rbw_hz)  # [SENS]:BANDwidth:RESolution
+    fsw.sense.bandwidth.resolution.set(rbw_hz)
 
-    # Optional VBW (if provided, we set it; otherwise leave instrument's setting)
-    if vbw_hz is not None and vbw_hz > 0:
-        fsw.sense.bandwidth.video.set(vbw_hz)   # [SENS]:BANDwidth:VIDeo
+    if vbw_hz is not None and vbw_hz > 0.0:
+        fsw.sense.bandwidth.video.set(vbw_hz)
 
 
 def _freq_error_limit(span_hz: float, rbw_hz: float) -> float:
@@ -259,10 +307,20 @@ def _freq_error_limit(span_hz: float, rbw_hz: float) -> float:
     We allow the larger of:
         - 10 * RBW
         - 10% of span
-
-    This ties the allowed deviation to resolution as well as zoom.
     """
-    return max(10.0 * rbw_hz, 0.1 * span_hz)
+    #return max(10.0 * rbw_hz, 0.1 * span_hz)
+    return 0.2e6
+
+
+def _get_sweep_timeout_ms(fsw: RsFsw, sweep_timeout_ms: Optional[int]) -> int:
+    """Helper: determine sweep timeout."""
+    if sweep_timeout_ms is not None:
+        return sweep_timeout_ms
+    try:
+        sweep_time_s = fsw.sense.sweep.time.get()
+        return int(max(1000.0 * sweep_time_s * 2.0, 1000.0))
+    except Exception:
+        return 5000
 
 
 def measure_single_tone(
@@ -284,8 +342,7 @@ def measure_single_tone(
         "at-freq" - marker at 'center_hz' (useful when the spur of interest
                     is not the biggest in the span)
 
-    Averaging is done in Python (linear units) to avoid having to configure
-    the FSW’s averaging mode in detail.
+    Averaging is done in Python (linear units).
     """
     marker_mode = marker_mode.lower()
     if marker_mode not in ("peak", "at-freq"):
@@ -293,36 +350,24 @@ def measure_single_tone(
 
     configure_span_and_bw(fsw, center_hz, span_hz, rbw_hz, vbw_hz)
 
-    # Estimate sweep timeout if not given, based on instrument sweep time.
-    if sweep_timeout_ms is None:
-        try:
-            sweep_time_s = fsw.sense.sweep.time.get()
-            sweep_timeout_ms = int(max(1000.0 * sweep_time_s * 2.0, 1000.0))
-        except Exception:
-            # Fallback to a conservative default if sweep time is not accessible
-            sweep_timeout_ms = 5000
+    sweep_timeout_ms = _get_sweep_timeout_ms(fsw, sweep_timeout_ms)
 
-    # Single-sweep mode
-    fsw.initiate.continuous.set(False)  # INIT:CONT OFF
+    fsw.initiate.continuous.set(False)
 
     powers_dbm: List[float] = []
     last_marker_freq_hz = center_hz
 
-    # Use Trace 1, Marker 1
     fsw.calculate.marker.trace.set(1, repcap.Window.Nr1, repcap.Marker.Nr1)
 
     sweeps = max(avg_sweeps, 1)
     for _ in range(sweeps):
-        # Trigger one sweep and wait for completion
-        fsw.initiate.immediate_with_opc(sweep_timeout_ms)  # INIT:IMM; *OPC?
+        fsw.initiate.immediate_with_opc(sweep_timeout_ms)
 
         if marker_mode == "peak":
-            # Peak search (maximum in span)
             fsw.calculate.marker.maximum.peak.set(
                 repcap.Window.Nr1, repcap.Marker.Nr1
             )
         else:
-            # Place marker at the requested frequency position
             fsw.calculate.marker.x.set(
                 center_hz,
                 repcap.Window.Nr1,
@@ -358,31 +403,391 @@ def _resolve_marker_mode(global_mode: str, kind: str) -> str:
     if gm in ("peak", "at-freq"):
         return gm
 
-    # auto mode: choose based on kind
     if kind in ("LO_leak", "IF_leak"):
         return "at-freq"
-    # for desired, image, harmonics, generic spurs: peak search
     return "peak"
 
 
-def _to_optional_float(value: Any) -> Optional[float]:
-    """Parse CSV field to float, returning None if empty/NaN/unparseable."""
-    if value is None:
-        return None
-    if isinstance(value, (int, float)):
-        if isinstance(value, float) and math.isnan(value):
-            return None
-        return float(value)
-    try:
-        s = str(value).strip()
-        if s == "":
-            return None
-        v = float(s)
-        if math.isnan(v):
-            return None
-        return v
-    except (TypeError, ValueError):
-        return None
+# ---------------------------------------------------------------------------
+# Frequency model / Δf weighting / topology helpers
+# ---------------------------------------------------------------------------
+
+def spur_weight(
+    m: int,
+    n: int,
+    sign: int,
+    low_order_sum: int,
+    mid_order_sum: int,
+    mid_weight: float,
+) -> float:
+    """
+    Order-aware weight for applying Δf from desired product.
+
+    - m+n <= low_order_sum -> 1.0
+    - low_order_sum < m+n <= mid_order_sum -> mid_weight
+    - m+n  > mid_order_sum -> 0.0
+    """
+    order_sum = m + n
+    if order_sum <= low_order_sum:
+        return 1.0
+    if order_sum <= mid_order_sum:
+        return float(mid_weight)
+    return 0.0
+
+
+def assign_analytic_coincidence_groups(
+    spurs: List[SpurDef],
+    rbw_hz: float,
+    coincidence_factor: float,
+    min_coincidence_hz: float,
+) -> None:
+    """
+    Assign analytic coincidence groups based on expected_freq_hz using
+    connected components.
+
+    Tolerance:
+        tol_hz = max(rbw_hz * coincidence_factor, min_coincidence_hz)
+    """
+    if not spurs:
+        return
+
+    tol_hz = max(rbw_hz * float(coincidence_factor), float(min_coincidence_hz))
+    if tol_hz <= 0.0:
+        return
+
+    n = len(spurs)
+    freqs = [s.expected_freq_hz for s in spurs]
+
+    # Sort indices by frequency
+    indices = list(range(n))
+    indices.sort(key=lambda i: freqs[i])
+
+    # Build adjacency list (connect spurs within tol_hz)
+    adj: List[List[int]] = [[] for _ in range(n)]
+    for idx_pos, i in enumerate(indices):
+        for jdx_pos in range(idx_pos + 1, len(indices)):
+            j = indices[jdx_pos]
+            if abs(freqs[j] - freqs[i]) <= tol_hz:
+                adj[i].append(j)
+                adj[j].append(i)
+            else:
+                # Sorted by frequency; beyond tolerance
+                break
+
+    visited = [False] * n
+    group_id = 0
+
+    for start in range(n):
+        if visited[start]:
+            continue
+        stack = [start]
+        component: List[int] = []
+        while stack:
+            u = stack.pop()
+            if visited[u]:
+                continue
+            visited[u] = True
+            component.append(u)
+            for v in adj[u]:
+                if not visited[v]:
+                    stack.append(v)
+        if len(component) > 1:
+            for idx in component:
+                spurs[idx].analytic_coincidence_id = group_id
+                spurs[idx].analytic_coincidence_size = len(component)
+            group_id += 1
+
+
+def assign_clusters(
+    spurs: List[SpurDef],
+    span_hz: float,
+    rbw_hz: float,
+    marker_confusion_factor: float,
+    rbw_guard_factor: float,
+    max_cluster_distance_hz: float,
+) -> None:
+    """
+    Assign clusters using connected components on frequencies.
+
+    Use expected_corr_freq_hz if set (>0), otherwise expected_freq_hz.
+
+    contamination_limit = min(
+        span * marker_confusion_factor,
+        rbw * rbw_guard_factor,
+        max_cluster_distance_hz (if > 0)
+    )
+    """
+    if not spurs:
+        return
+
+    span_hz = max(span_hz, 1.0)
+    rbw_hz = max(rbw_hz, 1.0)
+
+    d_marker_hz = span_hz * float(marker_confusion_factor)
+    d_rbw_hz = rbw_hz * float(rbw_guard_factor)
+    contamination_limit = min(d_marker_hz, d_rbw_hz)
+
+    if max_cluster_distance_hz is not None and max_cluster_distance_hz > 0.0:
+        contamination_limit = min(contamination_limit, float(max_cluster_distance_hz))
+
+    if contamination_limit <= 0.0:
+        # Everything stays singleton
+        for s in spurs:
+            s.cluster_id = -1
+            s.cluster_size = 1
+        return
+
+    n = len(spurs)
+    freqs = [
+        (s.expected_corr_freq_hz if s.expected_corr_freq_hz > 0.0 else s.expected_freq_hz)
+        for s in spurs
+    ]
+
+    indices = list(range(n))
+    indices.sort(key=lambda i: freqs[i])
+
+    # Build adjacency list (naive O(N^2), fine for small spur counts)
+    adj: List[List[int]] = [[] for _ in range(n)]
+    for i_idx in range(n):
+        i = indices[i_idx]
+        for j_idx in range(i_idx + 1, n):
+            j = indices[j_idx]
+            if abs(freqs[j] - freqs[i]) <= contamination_limit:
+                adj[i].append(j)
+                adj[j].append(i)
+            else:
+                # Sorted by frequency; no need to check further
+                break
+
+    visited = [False] * n
+    cluster_id_counter = 0
+
+    for start in range(n):
+        if visited[start]:
+            continue
+        stack = [start]
+        component: List[int] = []
+        while stack:
+            u = stack.pop()
+            if visited[u]:
+                continue
+            visited[u] = True
+            component.append(u)
+            for v in adj[u]:
+                if not visited[v]:
+                    stack.append(v)
+        if len(component) > 1:
+            # Real cluster
+            for idx in component:
+                spurs[idx].cluster_id = cluster_id_counter
+                spurs[idx].cluster_size = len(component)
+            cluster_id_counter += 1
+        else:
+            # Singleton
+            spurs[component[0]].cluster_id = -1
+            spurs[component[0]].cluster_size = 1
+
+
+def assign_measured_coincidence_groups(
+    results: List[SpurResult],
+    rbw_hz: float,
+    measured_coincidence_factor: float,
+) -> None:
+    """
+    Assign measured-coincidence groups based on measured_freq_hz.
+
+    Only within a single (LO, IF) point (this function is called per-point).
+    """
+    if not results:
+        return
+
+    tol_hz = max(rbw_hz * float(measured_coincidence_factor), 0.0)
+
+    # Filter to valid measured frequencies
+    valid_indices = [
+        i for i, r in enumerate(results)
+        if not math.isnan(r.measured_freq_hz)
+    ]
+    if not valid_indices:
+        return
+
+    valid_indices.sort(key=lambda i: results[i].measured_freq_hz)
+
+    current_group: List[int] = []
+    group_id = 0
+
+    def finalize_group(group: List[int], gid: int) -> int:
+        if len(group) > 1:
+            for idx in group:
+                results[idx].measured_coincidence_id = gid
+                results[idx].measured_coincidence_size = len(group)
+            return gid + 1
+        return gid
+
+    for idx in valid_indices:
+        if not current_group:
+            current_group = [idx]
+            continue
+
+        ref_freq = results[current_group[0]].measured_freq_hz
+        f = results[idx].measured_freq_hz
+        if abs(f - ref_freq) <= tol_hz:
+            current_group.append(idx)
+        else:
+            group_id = finalize_group(current_group, group_id)
+            current_group = [idx]
+
+    if current_group:
+        finalize_group(current_group, group_id)
+
+
+# ---------------------------------------------------------------------------
+# Cluster-based measurement
+# ---------------------------------------------------------------------------
+
+def measure_cluster(
+    fsw: RsFsw,
+    cluster_spurs: List[SpurDef],
+    rbw_hz: float,
+    vbw_hz: Optional[float],
+    avg_sweeps: int,
+    sweep_timeout_ms: Optional[int],
+    delta_desired_hz: float,
+    low_order_sum: int,
+    mid_order_sum: int,
+    mid_weight: float,
+    cluster_max_window_rbw: float,
+    all_spurs_for_point: Optional[List[SpurDef]] = None,
+    cluster_id: Optional[int] = None,
+) -> List[Tuple[float, float, float, bool]]:
+    """
+    Measure all spurs in a cluster with a single trace acquisition and
+    assign local peaks by software.
+
+    Returns a list of tuples in the same order as 'cluster_spurs':
+
+        (measured_freq_hz, power_dbm, window_half_width_hz, window_fallback_used)
+
+    If 'all_spurs_for_point' and 'cluster_id' are provided, the cluster span is
+    derived from *all* spurs sharing that cluster_id (including the desired),
+    even if only a subset is being assigned within this call.
+    """
+    if not cluster_spurs:
+        return []
+
+    # Determine which spurs define the cluster bounds
+    if all_spurs_for_point is not None and cluster_id is not None:
+        full_cluster_spurs = [
+            s for s in all_spurs_for_point if s.cluster_id == cluster_id
+        ]
+        if not full_cluster_spurs:
+            full_cluster_spurs = cluster_spurs
+    else:
+        full_cluster_spurs = cluster_spurs
+
+    # Compute cluster bounds using corrected frequencies
+    freqs_corr_full = [
+        (s.expected_corr_freq_hz if s.expected_corr_freq_hz > 0.0 else s.expected_freq_hz)
+        for s in full_cluster_spurs
+    ]
+    f_min = min(freqs_corr_full)
+    f_max = max(freqs_corr_full)
+    cluster_width = max(f_max - f_min, rbw_hz)
+    guard_hz = max(5.0 * rbw_hz, 0.1 * cluster_width)
+
+    span_cluster = cluster_width + 2.0 * guard_hz
+    center_cluster = 0.5 * (f_min + f_max)
+
+    configure_span_and_bw(fsw, center_cluster, span_cluster, rbw_hz, vbw_hz)
+
+    sweep_timeout_ms = _get_sweep_timeout_ms(fsw, sweep_timeout_ms)
+    fsw.initiate.continuous.set(False)
+
+    # Acquire averaged trace (linear averaging in Python)
+    sweeps = max(avg_sweeps, 1)
+    x_data: Optional[List[float]] = None
+    acc_lin: Optional[List[float]] = None
+
+    for _ in range(sweeps):
+        fsw.initiate.immediate_with_opc(sweep_timeout_ms)
+
+        # TRAC:DATA? TRACE1 -> y-data, TRAC:DATA:X? TRACE1 -> x-axis (freq)
+        y_values = fsw.utilities.query_float_list("TRAC:DATA? TRACE1")
+        if x_data is None:
+            x_data = fsw.utilities.query_float_list("TRAC:DATA:X? TRACE1")
+
+        if acc_lin is None:
+            acc_lin = [dbm_to_mw(y) for y in y_values]
+        else:
+            if len(acc_lin) != len(y_values):
+                raise RuntimeError(
+                    "Trace length changed between sweeps in cluster measurement."
+                )
+            for i, y in enumerate(y_values):
+                acc_lin[i] += dbm_to_mw(y)
+
+    if x_data is None or acc_lin is None:
+        raise RuntimeError("Failed to acquire trace data in cluster measurement.")
+
+    avg_lin = [v / sweeps for v in acc_lin]
+    avg_dbm = [mw_to_dbm(v) for v in avg_lin]
+
+    # Helper: find index window around target frequency
+    def find_peak_near(freq_target: float, half_width_hz: float) -> Tuple[float, float, bool]:
+        """
+        Returns:
+            (peak_freq_hz, peak_power_dbm, used_fallback)
+        """
+        n = len(x_data)
+        if n == 0:
+            return float("nan"), float("nan"), True
+
+        used_fallback = False
+
+        f_start = freq_target - half_width_hz
+        f_stop = freq_target + half_width_hz
+
+        # Find index range
+        i_start = 0
+        while i_start < n and x_data[i_start] < f_start:
+            i_start += 1
+        i_stop = n - 1
+        while i_stop >= 0 and x_data[i_stop] > f_stop:
+            i_stop -= 1
+
+        if i_start >= n or i_stop < 0 or i_start > i_stop:
+            # Fallback to global maximum if window is empty
+            used_fallback = True
+            i_start = 0
+            i_stop = n - 1
+
+        max_idx = i_start
+        max_val = avg_dbm[i_start]
+        for i in range(i_start + 1, i_stop + 1):
+            if avg_dbm[i] > max_val:
+                max_val = avg_dbm[i]
+                max_idx = i
+
+        return x_data[max_idx], max_val, used_fallback
+
+    # For each spur, search around expected_corr with a window based on Δf
+    results: List[Tuple[float, float, float, bool]] = []
+    for s in cluster_spurs:
+        w = spur_weight(s.m, s.n, s.sign, low_order_sum, mid_order_sum, mid_weight)
+        # Base window wide enough to cover Δf scaling + safety
+        half_width = max(abs(delta_desired_hz) * w, rbw_hz * 20.0)
+
+        # Optional cap in units of RBW
+        if cluster_max_window_rbw is not None and cluster_max_window_rbw > 0.0:
+            half_width = min(half_width, rbw_hz * float(cluster_max_window_rbw))
+
+        target_freq = (
+            s.expected_corr_freq_hz if s.expected_corr_freq_hz > 0.0 else s.expected_freq_hz
+        )
+        mfreq, mpower, used_fallback = find_peak_near(target_freq, half_width)
+        results.append((mfreq, mpower, half_width, used_fallback))
+
+    return results
 
 
 # ---------------------------------------------------------------------------
@@ -391,14 +796,15 @@ def _to_optional_float(value: Any) -> Optional[float]:
 
 def measure_spurs_for_point(
     fsw: RsFsw,
-    lo_hz: float,
-    if_hz: float,
+    lo_set_hz: float,
+    if_set_hz: float,
+    f_lo_model_hz: float,
+    f_if_model_hz: float,
     mode: str,
     m_max: int,
     n_max: int,
     f_min_hz: float,
     f_max_hz: float,
-    dedupe_freq_hz: float,
     span_hz: float,
     rbw_hz: float,
     vbw_hz: Optional[float],
@@ -407,35 +813,55 @@ def measure_spurs_for_point(
     marker_mode: str,
     min_power_db: Optional[float],
     min_desired_db: Optional[float],
+    coincidence_factor: float,
+    measured_coincidence_factor: float,
+    min_coincidence_hz: float,
+    marker_confusion_factor: float,
+    rbw_guard_factor: float,
+    max_cluster_distance_hz: float,
+    deltaf_low_order_sum: int,
+    deltaf_mid_order_sum: int,
+    deltaf_mid_weight: float,
+    cluster_max_window_rbw: float,
 ) -> List[SpurResult]:
     """
     Perform a spur scan for a single (LO, IF) mixer operating point using
     an already open FSW session. Returns a list of SpurResult.
+
+    Frequencies for spur generation are based on f_lo_model_hz / f_if_model_hz
+    (calibrated/readback model), not the raw setpoints.
     """
-    if mode == "lo-if" and lo_hz <= if_hz:
+    if mode == "lo-if" and f_lo_model_hz <= f_if_model_hz:
         print(
             "WARNING: LO <= IF while using lo-if (down-conversion). "
             "Check that your LO and IF frequencies are correct."
         )
 
-    # Build list of mixer products
+    # Build list of mixer products (no de-duplication)
     spur_defs = build_spur_list(
-        f_lo_hz=lo_hz,
-        f_if_hz=if_hz,
+        f_lo_hz=f_lo_model_hz,
+        f_if_hz=f_if_model_hz,
         m_max=m_max,
         n_max=n_max,
         desired_mode=mode,
         f_min_hz=f_min_hz,
         f_max_hz=f_max_hz,
-        dedupe_hz=dedupe_freq_hz,
     )
     if not spur_defs or spur_defs[0].kind != "desired":
         raise RuntimeError(
             "Desired product is not within the [f_min, f_max] range "
-            "after generation / de-duplication."
+            "after spur generation."
         )
 
     print(f"Total products to measure (including desired): {len(spur_defs)}")
+
+    # Analytic coincidences based on expected frequencies
+    assign_analytic_coincidence_groups(
+        spur_defs,
+        rbw_hz=rbw_hz,
+        coincidence_factor=coincidence_factor,
+        min_coincidence_hz=min_coincidence_hz,
+    )
 
     results: List[SpurResult] = []
 
@@ -465,21 +891,19 @@ def measure_spurs_for_point(
     freq_error_desired_hz = abs(d_meas_freq - desired_def.expected_freq_hz)
     limit_desired_hz = _freq_error_limit(span_hz, rbw_hz)
     print(
-        f"  Desired product measured at {d_meas_freq/1e9:.6f} GHz, "
-        f"{d_power_dbm:.2f} dBm (Δf = {freq_error_desired_hz/1e3:.1f} kHz, "
-        f"limit ≈ {limit_desired_hz/1e3:.1f} kHz)"
+        f"  Desired product measured at {d_meas_freq / 1e9:.6f} GHz, "
+        f"{d_power_dbm:.2f} dBm (Δf = {freq_error_desired_hz / 1e3:.1f} kHz, "
+        f"limit ≈ {limit_desired_hz / 1e3:.1f} kHz)"
     )
 
-    # Frequency sanity check for the desired product
     if freq_error_desired_hz > limit_desired_hz:
         raise RuntimeError(
             "Desired product marker is far from expected frequency "
-            f"(Δf = {freq_error_desired_hz/1e6:.3f} MHz, "
-            f"limit ≈ {limit_desired_hz/1e6:.3f} MHz). "
-            "Check your LO/IF settings, span, RBW, and marker mode."
+            f"(Δf = {freq_error_desired_hz / 1e6:.3f} MHz, "
+            f"limit ≈ {limit_desired_hz / 1e6:.3f} MHz). "
+            "Check LO/IF settings, span, RBW, and marker mode."
         )
 
-    # Optional minimum desired level (in dBm)
     if min_desired_db is not None and d_power_dbm < min_desired_db:
         raise RuntimeError(
             f"Desired product level {d_power_dbm:.2f} dBm is below "
@@ -487,6 +911,28 @@ def measure_spurs_for_point(
             "Aborting spur scan for this point."
         )
 
+    # Per-point Δf correction
+    delta_desired_hz = d_meas_freq - desired_def.expected_freq_hz
+    for s in spur_defs:
+        w = spur_weight(
+            s.m, s.n, s.sign,
+            low_order_sum=deltaf_low_order_sum,
+            mid_order_sum=deltaf_mid_order_sum,
+            mid_weight=deltaf_mid_weight,
+        )
+        s.expected_corr_freq_hz = s.expected_freq_hz + w * delta_desired_hz
+
+    # Clusters based on corrected frequencies
+    assign_clusters(
+        spur_defs,
+        span_hz=span_hz,
+        rbw_hz=rbw_hz,
+        marker_confusion_factor=marker_confusion_factor,
+        rbw_guard_factor=rbw_guard_factor,
+        max_cluster_distance_hz=max_cluster_distance_hz,
+    )
+
+    # Record desired result (measured separately, not from cluster)
     desired_result = SpurResult(
         kind=desired_def.kind,
         m=desired_def.m,
@@ -494,22 +940,43 @@ def measure_spurs_for_point(
         sign=desired_def.sign,
         expression=desired_def.expression,
         expected_freq_hz=desired_def.expected_freq_hz,
+        expected_corr_freq_hz=desired_def.expected_corr_freq_hz,
         measured_freq_hz=d_meas_freq,
         power_dbm=d_power_dbm,
-        rel_dbc=0.0,   # reference
+        rel_dbc=0.0,
         error=None,
         noise_limited=False,
+        cluster_id=desired_def.cluster_id,
+        cluster_size=desired_def.cluster_size,
+        analytic_coincidence_id=desired_def.analytic_coincidence_id,
+        analytic_coincidence_size=desired_def.analytic_coincidence_size,
+        measurement_scope="single",
+        cluster_window_half_width_hz=0.0,
+        cluster_window_fallback=False,
     )
     results.append(desired_result)
 
-    # Measure all other products
-    for spur_def in spur_defs[1:]:
-        f_nom = spur_def.expected_freq_hz
+    # Group non-desired spurs by cluster_id
+    cluster_map: Dict[int, List[SpurDef]] = {}
+    single_spurs: List[SpurDef] = []
+
+    for s in spur_defs[1:]:
+        if s.cluster_size <= 1:
+            single_spurs.append(s)
+        else:
+            cluster_map.setdefault(s.cluster_id, []).append(s)
+
+    # First handle single-spur clusters via marker-based measurement
+    for spur_def in single_spurs:
+        f_nom_corr = (
+            spur_def.expected_corr_freq_hz if spur_def.expected_corr_freq_hz > 0.0
+            else spur_def.expected_freq_hz
+        )
         kind = spur_def.kind
 
         print(
-            f"\nMeasuring {kind}: {spur_def.expression} "
-            f"at ~{f_nom / 1e9:.6f} GHz"
+            f"\nMeasuring isolated {kind}: {spur_def.expression} "
+            f"at ~{f_nom_corr / 1e9:.6f} GHz"
         )
 
         meas_freq = float("nan")
@@ -522,7 +989,7 @@ def measure_spurs_for_point(
             eff_marker_mode = _resolve_marker_mode(marker_mode, kind)
             meas_freq, p_dbm = measure_single_tone(
                 fsw=fsw,
-                center_hz=f_nom,
+                center_hz=f_nom_corr,
                 span_hz=span_hz,
                 rbw_hz=rbw_hz,
                 vbw_hz=vbw_hz,
@@ -531,20 +998,18 @@ def measure_spurs_for_point(
                 marker_mode=eff_marker_mode,
             )
 
-            # Frequency sanity check
-            freq_error_hz = abs(meas_freq - f_nom)
+            freq_error_hz = abs(meas_freq - f_nom_corr)
             limit_hz = _freq_error_limit(span_hz, rbw_hz)
             if freq_error_hz > limit_hz:
                 print(
-                    f"  WARNING: Marker at {meas_freq/1e9:.6f} GHz is far from "
-                    f"expected {f_nom/1e9:.6f} GHz (Δ = {freq_error_hz/1e3:.1f} kHz, "
-                    f"limit ≈ {limit_hz/1e3:.1f} kHz). "
+                    f"  WARNING: Marker at {meas_freq / 1e9:.6f} GHz is far from "
+                    f"expected {f_nom_corr / 1e9:.6f} GHz (Δ = {freq_error_hz / 1e3:.1f} kHz, "
+                    f"limit ≈ {limit_hz / 1e3:.1f} kHz). "
                     "Possible wrong peak captured."
                 )
 
             rel_dbc = p_dbm - d_power_dbm
 
-            # Noise-limited flag (optional)
             if min_power_db is not None and p_dbm < min_power_db:
                 noise_limited = True
 
@@ -566,14 +1031,127 @@ def measure_spurs_for_point(
                 n=spur_def.n,
                 sign=spur_def.sign,
                 expression=spur_def.expression,
-                expected_freq_hz=f_nom,
+                expected_freq_hz=spur_def.expected_freq_hz,
+                expected_corr_freq_hz=spur_def.expected_corr_freq_hz,
                 measured_freq_hz=meas_freq,
                 power_dbm=p_dbm,
                 rel_dbc=rel_dbc,
                 error=error_msg,
                 noise_limited=noise_limited,
+                cluster_id=spur_def.cluster_id,
+                cluster_size=spur_def.cluster_size,
+                analytic_coincidence_id=spur_def.analytic_coincidence_id,
+                analytic_coincidence_size=spur_def.analytic_coincidence_size,
+                measurement_scope="single",
+                cluster_window_half_width_hz=0.0,
+                cluster_window_fallback=False,
             )
         )
+
+    # Now handle multi-spur clusters via shared trace
+    for cid, cluster_spurs in cluster_map.items():
+        if not cluster_spurs:
+            continue
+        print(
+            f"\nMeasuring cluster {cid} with {len(cluster_spurs)} non-desired spurs "
+            f"(span-based cluster measurement)"
+        )
+
+        try:
+            cluster_results = measure_cluster(
+                fsw=fsw,
+                cluster_spurs=cluster_spurs,
+                rbw_hz=rbw_hz,
+                vbw_hz=vbw_hz,
+                avg_sweeps=avg_sweeps,
+                sweep_timeout_ms=timeout_ms,
+                delta_desired_hz=delta_desired_hz,
+                low_order_sum=deltaf_low_order_sum,
+                mid_order_sum=deltaf_mid_order_sum,
+                mid_weight=deltaf_mid_weight,
+                cluster_max_window_rbw=cluster_max_window_rbw,
+                all_spurs_for_point=spur_defs,
+                cluster_id=cid,
+            )
+        except Exception as ex:
+            print(f"  ERROR measuring cluster {cid}: {ex}")
+            print("  -> Logging NaN for all cluster spurs.")
+            cluster_results = [
+                (float("nan"), float("nan"), 0.0, True)
+            ] * len(cluster_spurs)
+
+        for spur_def, (meas_freq, p_dbm, window_half_width, used_fallback) in zip(
+            cluster_spurs, cluster_results
+        ):
+            kind = spur_def.kind
+            rel_dbc: Optional[float] = None
+            error_msg: Optional[str] = None
+            noise_limited = False
+
+            if math.isnan(p_dbm) or math.isinf(p_dbm):
+                error_msg = "Cluster measurement failed or invalid power"
+                print(f"  ERROR for {spur_def.expression}: {error_msg}")
+            else:
+                rel_dbc = p_dbm - d_power_dbm
+                if min_power_db is not None and p_dbm < min_power_db:
+                    noise_limited = True
+
+                f_nom_corr = (
+                    spur_def.expected_corr_freq_hz if spur_def.expected_corr_freq_hz > 0.0
+                    else spur_def.expected_freq_hz
+                )
+                freq_error_hz = abs(
+                    meas_freq - f_nom_corr
+                ) if not math.isnan(meas_freq) else float("nan")
+                limit_hz = _freq_error_limit(span_hz, rbw_hz)
+                if not math.isnan(freq_error_hz) and freq_error_hz > limit_hz:
+                    print(
+                        f"  WARNING (cluster): peak at {meas_freq / 1e9:.6f} GHz is far from "
+                        f"expected {f_nom_corr / 1e9:.6f} GHz (Δ = {freq_error_hz / 1e3:.1f} kHz, "
+                        f"limit ≈ {limit_hz / 1e3:.1f} kHz)."
+                    )
+                if used_fallback:
+                    print(
+                        "  NOTE: Cluster search window did not overlap trace; "
+                        "global maximum in span was used as fallback for this spur."
+                    )
+
+                print(
+                    f"  {kind} {spur_def.expression}: {meas_freq / 1e9:.6f} GHz, "
+                    f"{p_dbm:.2f} dBm ({rel_dbc:.2f} dBc)"
+                    + (" [noise-limited]" if noise_limited else "")
+                )
+
+            results.append(
+                SpurResult(
+                    kind=kind,
+                    m=spur_def.m,
+                    n=spur_def.n,
+                    sign=spur_def.sign,
+                    expression=spur_def.expression,
+                    expected_freq_hz=spur_def.expected_freq_hz,
+                    expected_corr_freq_hz=spur_def.expected_corr_freq_hz,
+                    measured_freq_hz=meas_freq,
+                    power_dbm=p_dbm,
+                    rel_dbc=rel_dbc,
+                    error=error_msg,
+                    noise_limited=noise_limited,
+                    cluster_id=spur_def.cluster_id,
+                    cluster_size=spur_def.cluster_size,
+                    analytic_coincidence_id=spur_def.analytic_coincidence_id,
+                    analytic_coincidence_size=spur_def.analytic_coincidence_size,
+                    measurement_scope="cluster",
+                    cluster_window_half_width_hz=window_half_width,
+                    cluster_window_fallback=used_fallback,
+                )
+            )
+
+    # Measured coincidence topology (per point)
+    assign_measured_coincidence_groups(
+        results,
+        rbw_hz=rbw_hz,
+        measured_coincidence_factor=measured_coincidence_factor,
+    )
 
     print("Spur scan for this point done.")
     return results
@@ -589,7 +1167,6 @@ def frange(start: float, stop: float, step: float) -> List[float]:
         raise ValueError("Step must be > 0")
     vals: List[float] = []
     x = start
-    # Avoid floating rounding problems: use a small epsilon
     eps = abs(step) * 1e-6
     while x <= stop + eps:
         vals.append(x)
@@ -599,8 +1176,10 @@ def frange(start: float, stop: float, step: float) -> List[float]:
 
 def build_csv_row(
     r: SpurResult,
-    lo_hz: float,
-    if_hz: float,
+    lo_set_hz: float,
+    if_set_hz: float,
+    f_lo_model_hz: float,
+    f_if_model_hz: float,
     mode: str,
     span_hz: float,
     rbw_hz: float,
@@ -614,15 +1193,19 @@ def build_csv_row(
     """Convert a SpurResult + context into a CSV row dictionary."""
     if math.isnan(r.measured_freq_hz):
         freq_error_hz = float("nan")
+        freq_error_corr_hz = float("nan")
     else:
         freq_error_hz = r.measured_freq_hz - r.expected_freq_hz
+        freq_error_corr_hz = r.measured_freq_hz - r.expected_corr_freq_hz
 
     return {
         "lo_index": lo_index,
         "if_index": if_index,
         "point_index": point_index,
-        "lo_Hz": lo_hz,
-        "if_Hz": if_hz,
+        "lo_set_Hz": lo_set_hz,
+        "if_set_Hz": if_set_hz,
+        "lo_model_Hz": f_lo_model_hz,
+        "if_model_Hz": f_if_model_hz,
         "mode": mode,
         "kind": r.kind,
         "m": r.m,
@@ -630,11 +1213,22 @@ def build_csv_row(
         "sign": r.sign,
         "expression": r.expression,
         "expected_freq_Hz": r.expected_freq_hz,
+        "expected_corr_freq_Hz": r.expected_corr_freq_hz,
         "measured_freq_Hz": r.measured_freq_hz,
         "freq_error_Hz": freq_error_hz,
+        "freq_error_corr_Hz": freq_error_corr_hz,
         "power_dBm": r.power_dbm,
         "rel_dBc_vs_desired": "" if r.rel_dbc is None else r.rel_dbc,
         "noise_limited": 1 if r.noise_limited else 0,
+        "cluster_id": r.cluster_id,
+        "cluster_size": r.cluster_size,
+        "analytic_coincidence_id": r.analytic_coincidence_id,
+        "analytic_coincidence_size": r.analytic_coincidence_size,
+        "measured_coincidence_id": r.measured_coincidence_id,
+        "measured_coincidence_size": r.measured_coincidence_size,
+        "measurement_scope": r.measurement_scope,
+        "cluster_window_half_width_Hz": r.cluster_window_half_width_hz,
+        "cluster_window_fallback": 1 if r.cluster_window_fallback else 0,
         "span_Hz": span_hz,
         "rbw_Hz": rbw_hz,
         "vbw_Hz": "" if vbw_hz is None else vbw_hz,
@@ -642,18 +1236,6 @@ def build_csv_row(
         "marker_mode_global": marker_mode_global,
         "marker_mode_effective": _resolve_marker_mode(marker_mode_global, r.kind),
         "error": "" if r.error is None else r.error,
-        # New remeasurement metadata (initialized for base sweep)
-        "remeasure_applied": 0,
-        "remeasure_lo_Hz": "",
-        "remeasure_if_Hz": "",
-        "remeasure_rf_Hz": "",
-        "remeasure_lo_offset_Hz": "",
-        "remeasure_if_offset_Hz": "",
-        "remeasure_reason": "",
-        "remeasure_note": "",
-        # Optional originals, filled only if remeasure_applied == 1
-        "power_dBm_original": "",
-        "rel_dBc_vs_desired_original": "",
     }
 
 
@@ -663,8 +1245,10 @@ def get_csv_fieldnames() -> List[str]:
         "lo_index",
         "if_index",
         "point_index",
-        "lo_Hz",
-        "if_Hz",
+        "lo_set_Hz",
+        "if_set_Hz",
+        "lo_model_Hz",
+        "if_model_Hz",
         "mode",
         "kind",
         "m",
@@ -672,11 +1256,22 @@ def get_csv_fieldnames() -> List[str]:
         "sign",
         "expression",
         "expected_freq_Hz",
+        "expected_corr_freq_Hz",
         "measured_freq_Hz",
         "freq_error_Hz",
+        "freq_error_corr_Hz",
         "power_dBm",
         "rel_dBc_vs_desired",
         "noise_limited",
+        "cluster_id",
+        "cluster_size",
+        "analytic_coincidence_id",
+        "analytic_coincidence_size",
+        "measured_coincidence_id",
+        "measured_coincidence_size",
+        "measurement_scope",
+        "cluster_window_half_width_Hz",
+        "cluster_window_fallback",
         "span_Hz",
         "rbw_Hz",
         "vbw_Hz",
@@ -684,434 +1279,79 @@ def get_csv_fieldnames() -> List[str]:
         "marker_mode_global",
         "marker_mode_effective",
         "error",
-        # New overlap / remeasurement metadata
-        "remeasure_applied",
-        "remeasure_lo_Hz",
-        "remeasure_if_Hz",
-        "remeasure_rf_Hz",
-        "remeasure_lo_offset_Hz",
-        "remeasure_if_offset_Hz",
-        "remeasure_reason",
-        "remeasure_note",
-        "power_dBm_original",
-        "rel_dBc_vs_desired_original",
     ]
 
 
 # ---------------------------------------------------------------------------
-# Overlap detection and remeasurement (Pass 2 + 3)
+# Calibration helpers
 # ---------------------------------------------------------------------------
 
-def run_overlap_detection_and_remeasure(
-    master_rows: List[Dict[str, Any]],
-    fsw: RsFsw,
-    smab: RsSmab,
-    smbv: RsSmbv,
-    args: argparse.Namespace,
-) -> None:
+def load_calibration_file(path: Optional[str]) -> Dict[str, Dict[str, float]]:
     """
-    Pass 2 + 3:
-        - Build 2D planes of rel_dBc_vs_desired for each spur (m,n,sign)
-        - Detect local positive outliers for weak spurs
-        - Identify overlap with stronger spurs at same (LO,IF) and same RF
-        - Compute LO/IF perturbation to separate them
-        - Remeasure small spur with marker_mode='at-freq'
-        - Overwrite contaminated values in master_rows and annotate metadata
+    Load simple linear calibration parameters from JSON.
+
+    Expected structure (all entries optional):
+
+        {
+          "lo": {"a": 1.0, "b": 0.0},
+          "if": {"a": 1.0, "b": 0.0}
+        }
+
+    Returns empty dict if path is None or file is not found / invalid.
     """
-    if not master_rows:
-        print("\n[Overlap] No data in master_rows, skipping overlap detection.")
-        return
-
-    if fsw is None or smab is None or smbv is None:
-        print("\n[Overlap] Instruments not available, skipping overlap detection.")
-        return
-
-    print("\n============================================================")
-    print("Starting overlap detection and remeasurement pass "
-          "(--overlap-detect enabled)")
-
-    # ------------------------------------------------------------------
-    # Build per-spur planes and helper maps
-    # ------------------------------------------------------------------
-    planes: Dict[Tuple[int, int, int], Dict[Tuple[int, int], float]] = {}
-    plane_medians: Dict[Tuple[int, int, int], float] = {}
-
-    # point -> list[row]
-    rows_by_point: Dict[Tuple[int, int], List[Dict[str, Any]]] = {}
-    # (point, spur_key) -> row
-    row_map: Dict[Tuple[int, int, int, int, int], Dict[str, Any]] = {}
-    # desired row per (lo_idx, if_idx)
-    desired_map: Dict[Tuple[int, int], Dict[str, Any]] = {}
-
-    for row in master_rows:
-        lo_idx = int(row["lo_index"])
-        if_idx = int(row["if_index"])
-        point_key = (lo_idx, if_idx)
-
-        rows_by_point.setdefault(point_key, []).append(row)
-
-        kind = str(row["kind"])
-        m = int(row["m"])
-        n = int(row["n"])
-        sign = int(row["sign"])
-        spur_key = (m, n, sign)
-
-        row_map[(lo_idx, if_idx, m, n, sign)] = row
-
-        if kind == "desired":
-            desired_map[point_key] = row
-            # desired plane is not considered for A/B overlap detection
-            continue
-
-        error_str = str(row.get("error") or "")
-        if error_str:
-            continue
-
-        rel = _to_optional_float(row.get("rel_dBc_vs_desired"))
-        if rel is None:
-            continue
-
-        planes.setdefault(spur_key, {})[(lo_idx, if_idx)] = rel
-
-    # Compute plane medians
-    for spur_key, plane in planes.items():
-        vals = list(plane.values())
-        if not vals:
-            continue
-        plane_medians[spur_key] = statistics.median(vals)
-
-    if not planes:
-        print("[Overlap] No valid non-desired spurs with rel_dBc found; "
-              "skipping overlap detection.")
-        return
-
-    # ------------------------------------------------------------------
-    # Local positive outlier detection
-    # ------------------------------------------------------------------
-    local_thr = float(args.overlap_local_thr_db)
-    freq_tol = max(3.0 * float(args.rbw), 0.01 * float(args.span))
-
-    candidates: List[Tuple[Tuple[int, int, int], int, int]] = []
-
-    print("[Overlap] Detecting local positive outliers in spur planes ...")
-
-    for spur_key, plane in planes.items():
-        for (i, j), P in plane.items():
-            neighbors: List[float] = []
-            for di in (-1, 0, 1):
-                for dj in (-1, 0, 1):
-                    if di == 0 and dj == 0:
-                        continue
-                    coord = (i + di, j + dj)
-                    if coord in plane:
-                        neighbors.append(plane[coord])
-            if len(neighbors) < 3:
-                continue
-
-            med_neighbors = statistics.median(neighbors)
-            if P - med_neighbors > local_thr:
-                candidates.append((spur_key, i, j))
-
-    print(f"[Overlap] Found {len(candidates)} local outlier candidates.")
-
-    if not candidates:
-        print("[Overlap] No suspicious local outliers; nothing to correct.")
-        return
-
-    # ------------------------------------------------------------------
-    # Check for overlapping spurs at same LO/IF
-    # ------------------------------------------------------------------
-    global_thr = float(args.overlap_global_thr_db)
-    equal_thr = float(args.overlap_equal_thr_db)
-
-    confirmed: List[Tuple[Tuple[int, int, int], Tuple[int, int, int], int, int]] = []
-
-    print("[Overlap] Checking each local outlier for overlap with a stronger spur...")
-
-    for spur_key_A, lo_idx, if_idx in candidates:
-        point_key = (lo_idx, if_idx)
-
-        row_A = row_map.get((lo_idx, if_idx, spur_key_A[0], spur_key_A[1], spur_key_A[2]))
-        if not row_A:
-            continue
-
-        rows_at_point = rows_by_point.get(point_key, [])
-        if not rows_at_point:
-            continue
-
-        P_A = _to_optional_float(row_A.get("rel_dBc_vs_desired"))
-        if P_A is None:
-            continue
-
-        median_plane_A = plane_medians.get(spur_key_A)
-        if median_plane_A is None:
-            continue
-
-        f_A_exp = _to_optional_float(row_A.get("expected_freq_Hz"))
-        if f_A_exp is None:
-            continue
-
-        best_B_key: Optional[Tuple[int, int, int]] = None
-        best_B_row: Optional[Dict[str, Any]] = None
-        best_B_strength: Optional[float] = None
-
-        for row_B in rows_at_point:
-            kind_B = str(row_B["kind"])
-            # Desired is not considered as B in this algorithm
-            if kind_B == "desired":
-                continue
-
-            m_B = int(row_B["m"])
-            n_B = int(row_B["n"])
-            s_B = int(row_B["sign"])
-            spur_key_B = (m_B, n_B, s_B)
-
-            if spur_key_B == spur_key_A:
-                continue
-
-            P_B = _to_optional_float(row_B.get("rel_dBc_vs_desired"))
-            if P_B is None:
-                continue
-
-            median_plane_B = plane_medians.get(spur_key_B)
-            if median_plane_B is None:
-                continue
-
-            f_B_exp = _to_optional_float(row_B.get("expected_freq_Hz"))
-            if f_B_exp is None:
-                continue
-
-            # RF-coincident within tolerance
-            if abs(f_B_exp - f_A_exp) > freq_tol:
-                continue
-
-            # B is typically much stronger than A
-            if median_plane_B - median_plane_A <= global_thr:
-                continue
-
-            # At this point, A and B read almost the same level
-            if abs(P_A - P_B) >= equal_thr:
-                continue
-
-            # This looks like strong B pulling weak A up
-            if (best_B_strength is None) or (median_plane_B > best_B_strength):
-                best_B_strength = median_plane_B
-                best_B_key = spur_key_B
-                best_B_row = row_B
-
-        if best_B_key is not None and best_B_row is not None:
-            confirmed.append((spur_key_A, best_B_key, lo_idx, if_idx))
-
-    print(f"[Overlap] Confirmed {len(confirmed)} overlapping spur cases.")
-
-    if not confirmed:
-        print("[Overlap] No confirmed overlaps; nothing to correct.")
-        return
-
-    # ------------------------------------------------------------------
-    # Remeasure and correct each confirmed overlap
-    # ------------------------------------------------------------------
-    sep_factor = float(args.overlap_sep_rbw)
-    rbw_hz = float(args.rbw)
-
-    max_lo_shift = _to_optional_float(getattr(args, "max_remeasure_lo_shift_hz", None))
-    max_if_shift = _to_optional_float(getattr(args, "max_remeasure_if_shift_hz", None))
-
-    lo_start = float(args.lo_start)
-    lo_stop = float(args.lo_stop)
-    if_start = float(args.if_start)
-    if_stop = float(args.if_stop)
-
-    corrections_applied = 0
-
-    print("[Overlap] Starting remeasurement of confirmed overlaps...")
-
-    for spur_key_A, spur_key_B, lo_idx, if_idx in confirmed:
-        point_key = (lo_idx, if_idx)
-        m1, n1, s1 = spur_key_A
-        m2, n2, s2 = spur_key_B
-
-        row_A = row_map.get((lo_idx, if_idx, m1, n1, s1))
-        row_B = row_map.get((lo_idx, if_idx, m2, n2, s2))
-        desired_row = desired_map.get(point_key)
-
-        if row_A is None or row_B is None or desired_row is None:
-            continue
-
-        LO = float(row_A["lo_Hz"])
-        IF = float(row_A["if_Hz"])
-
-        # Degenerate algebraic expression: cannot separate
-        if (m1 == m2) and (s1 * n1 == s2 * n2):
-            row_A["remeasure_applied"] = 0
-            row_A["remeasure_reason"] = "degenerate_expression"
-            row_A["remeasure_note"] = (
-                f"Spur {row_A['expression']} is algebraically identical to "
-                f"{row_B['expression']}; cannot separate via LO/IF shift."
-            )
-            continue
-
-        f_sep = sep_factor * rbw_hz
-
-        candidates: List[Dict[str, Any]] = []
-
-        # IF-only perturbation
-        denom_if = (s1 * n1) - (s2 * n2)
-        if denom_if != 0:
-            base_step_if = f_sep / abs(denom_if)
-            for sign_dir in (+1, -1):
-                d_if = sign_dir * base_step_if
-                new_if = IF + d_if
-                new_lo = LO
-
-                if max_if_shift is not None and abs(d_if) > max_if_shift:
-                    continue
-                if new_if < if_start or new_if > if_stop:
-                    continue
-
-                candidates.append(
-                    {
-                        "mode": "IF-only",
-                        "delta_lo": 0.0,
-                        "delta_if": d_if,
-                        "new_lo": new_lo,
-                        "new_if": new_if,
-                    }
-                )
-
-        # LO-only perturbation
-        denom_lo = (m1 - m2)
-        if denom_lo != 0:
-            base_step_lo = f_sep / abs(denom_lo)
-            for sign_dir in (+1, -1):
-                d_lo = sign_dir * base_step_lo
-                new_lo = LO + d_lo
-                new_if = IF
-
-                if max_lo_shift is not None and abs(d_lo) > max_lo_shift:
-                    continue
-                if new_lo < lo_start or new_lo > lo_stop:
-                    continue
-
-                candidates.append(
-                    {
-                        "mode": "LO-only",
-                        "delta_lo": d_lo,
-                        "delta_if": 0.0,
-                        "new_lo": new_lo,
-                        "new_if": new_if,
-                    }
-                )
-
-        if not candidates:
-            row_A["remeasure_applied"] = 0
-            row_A["remeasure_reason"] = "no_valid_perturbation"
-            row_A["remeasure_note"] = (
-                "No valid LO/IF perturbation within configured limits "
-                "to separate spur from "
-                f"{row_B['expression']} by {sep_factor}*RBW."
-            )
-            continue
-
-        # Choose candidate with minimal total shift; prefer IF-only on tie
-        candidates.sort(
-            key=lambda c: (
-                abs(c["delta_lo"]) + abs(c["delta_if"]),
-                0 if c["mode"] == "IF-only" else 1,
-            )
-        )
-        best = candidates[0]
-
-        delta_lo = best["delta_lo"]
-        delta_if = best["delta_if"]
-        new_lo = best["new_lo"]
-        new_if = best["new_if"]
-
-        print(
-            f"[Overlap] Remeasuring spur {row_A['expression']} at "
-            f"(lo_idx={lo_idx}, if_idx={if_idx}) with {best['mode']} "
-            f"perturbation: ΔLO={delta_lo:.1f} Hz, ΔIF={delta_if:.1f} Hz."
-        )
-
-        # Retune generators
+    if not path:
+        return {}
+    p = Path(path)
+    if not p.is_file():
+        print(f"WARNING: Calibration file '{p}' not found, ignoring.")
+        return {}
+    try:
+        with p.open("r", encoding="utf-8") as f:
+            data = json.load(f)
+        if not isinstance(data, dict):
+            raise ValueError("Calibration JSON is not a dict.")
+        return data
+    except Exception as ex:
+        print(f"WARNING: Failed to load calibration file '{p}': {ex}")
+        return {}
+
+
+def apply_linear_cal(
+    f_raw_hz: float,
+    cal_entry: Optional[Dict[str, Any]],
+) -> float:
+    """Apply simple linear calibration f_cal = a * f_raw + b."""
+    if not cal_entry:
+        return f_raw_hz
+    a = float(cal_entry.get("a", 1.0))
+    b = float(cal_entry.get("b", 0.0))
+    return a * f_raw_hz + b
+
+
+def build_freq_model(
+    set_freq_hz: float,
+    readback_func,
+    cal_entry: Optional[Dict[str, Any]],
+    use_readback: bool,
+    instrument_name: str,
+) -> float:
+    """
+    Build modelled frequency:
+
+        - Base = readback (if use_readback) or setpoint
+        - Then apply linear calibration if provided
+    """
+    f_raw = set_freq_hz
+    if use_readback and readback_func is not None:
         try:
-            if abs(delta_lo) > 0.0:
-                smab.source.frequency.fixed.set_value(new_lo)
-                if args.lo_settle_s and args.lo_settle_s > 0:
-                    time.sleep(args.lo_settle_s)
-
-            if abs(delta_if) > 0.0:
-                smbv.source.frequency.fixed.set_value(new_if)
-                if args.if_settle_s and args.if_settle_s > 0:
-                    time.sleep(args.if_settle_s)
+            f_raw = float(readback_func())
         except Exception as ex:
-            row_A["remeasure_applied"] = 0
-            row_A["remeasure_reason"] = "remeasure_failed"
-            row_A["remeasure_note"] = f"Failed to retune generators: {ex}"
-            continue
-
-        # Compute new expected RF for spur A
-        f_A_new_exp = abs(m1 * new_lo + s1 * n1 * new_if)
-
-        # Measure spur A at new point, marker at-freq
-        try:
-            remeas_freq_hz, remeas_power_dbm = measure_single_tone(
-                fsw=fsw,
-                center_hz=f_A_new_exp,
-                span_hz=args.span,
-                rbw_hz=args.rbw,
-                vbw_hz=args.vbw,
-                avg_sweeps=args.avg,
-                sweep_timeout_ms=args.timeout_ms,
-                marker_mode="at-freq",
+            print(
+                f"WARNING: Failed to read back frequency from {instrument_name}: {ex}. "
+                "Using setpoint instead."
             )
-        except Exception as ex:
-            row_A["remeasure_applied"] = 0
-            row_A["remeasure_reason"] = "remeasure_failed"
-            row_A["remeasure_note"] = f"Remeasurement failed: {ex}"
-            continue
-
-        P_desired_base = _to_optional_float(desired_row.get("power_dBm"))
-        if P_desired_base is None:
-            row_A["remeasure_applied"] = 0
-            row_A["remeasure_reason"] = "remeasure_failed"
-            row_A["remeasure_note"] = (
-                "Desired product power missing at base point; "
-                "cannot compute dBc for remeasurement."
-            )
-            continue
-
-        rel_dBc_new = remeas_power_dbm - P_desired_base
-
-        # Preserve original values if not already preserved
-        if str(row_A.get("power_dBm_original", "")).strip() == "":
-            row_A["power_dBm_original"] = row_A["power_dBm"]
-        if str(row_A.get("rel_dBc_vs_desired_original", "")).strip() == "":
-            row_A["rel_dBc_vs_desired_original"] = row_A.get("rel_dBc_vs_desired", "")
-
-        # Update measurement values
-        row_A["power_dBm"] = remeas_power_dbm
-        row_A["rel_dBc_vs_desired"] = rel_dBc_new
-        row_A["measured_freq_Hz"] = remeas_freq_hz
-
-        # Update metadata
-        row_A["remeasure_applied"] = 1
-        row_A["remeasure_lo_Hz"] = new_lo
-        row_A["remeasure_if_Hz"] = new_if
-        row_A["remeasure_rf_Hz"] = remeas_freq_hz
-        row_A["remeasure_lo_offset_Hz"] = new_lo - LO
-        row_A["remeasure_if_offset_Hz"] = new_if - IF
-        row_A["remeasure_reason"] = "overlap_with_strong_spur"
-        row_A["remeasure_note"] = (
-            f"{best['mode']} perturbation, {sep_factor:.2f}*RBW separation "
-            f"from spur {row_B['expression']}"
-        )
-
-        corrections_applied += 1
-
-    print(f"[Overlap] Remeasurement applied to {corrections_applied} spur rows.")
-    print("Finished overlap detection and correction pass.")
-    print("============================================================\n")
+    f_model = apply_linear_cal(f_raw, cal_entry)
+    return f_model
 
 
 # ---------------------------------------------------------------------------
@@ -1121,8 +1361,9 @@ def run_overlap_detection_and_remeasure(
 def main():
     p = argparse.ArgumentParser(
         description=(
-            "2D LO/IF sweep for mixer spur scan "
-            "(FSW + SMBV100A IF source + SMA100B LO source)"
+            "Extended 2D LO/IF sweep for mixer spur scan "
+            "(FSW + SMF100A LO source + SMA100B IF source) "
+            "with clusters / coincidences / Δf correction."
         )
     )
 
@@ -1134,16 +1375,17 @@ def main():
         help="FSW VISA resource string.",
     )
     p.add_argument(
+        "--smf",
         "--smbv",
-        dest="smbv_resource",
+        dest="smf_resource",
         default="TCPIP::192.168.1.102::HISLIP",
-        help="SMBV100A VISA resource string (IF generator).",
+        help="SMF100A VISA resource string (LO generator).",
     )
     p.add_argument(
         "--sma",
         dest="sma_resource",
         default="TCPIP::192.168.1.103::HISLIP",
-        help="SMA100B VISA resource string (LO generator).",
+        help="SMA100B VISA resource string (IF generator).",
     )
     p.add_argument(
         "--fsw-reset",
@@ -1151,14 +1393,16 @@ def main():
         help="Preset (*RST) the FSW on connect.",
     )
     p.add_argument(
+        "--smf-reset",
         "--smbv-reset",
+        dest="smf_reset",
         action="store_true",
-        help="Preset (*RST) the SMBV100A on connect.",
+        help="Preset (*RST) the SMF100A (LO) on connect.",
     )
     p.add_argument(
         "--sma-reset",
         action="store_true",
-        help="Preset (*RST) the SMA100B on connect.",
+        help="Preset (*RST) the SMA100B (IF) on connect.",
     )
 
     # LO sweep
@@ -1166,13 +1410,13 @@ def main():
         "--lo-start",
         type=float,
         required=True,
-        help="Start LO frequency in Hz.",
+        help="Start LO frequency in Hz (setpoint).",
     )
     p.add_argument(
         "--lo-stop",
         type=float,
         required=True,
-        help="Stop LO frequency in Hz.",
+        help="Stop LO frequency in Hz (setpoint).",
     )
     p.add_argument(
         "--lo-step",
@@ -1184,7 +1428,7 @@ def main():
         "--lo-level-db",
         type=float,
         default=0.0,
-        help="SMA100B LO output level in dBm.",
+        help="SMF100A LO output level in dBm.",
     )
     p.add_argument(
         "--lo-settle-s",
@@ -1198,13 +1442,13 @@ def main():
         "--if-start",
         type=float,
         required=True,
-        help="Start IF frequency in Hz.",
+        help="Start IF frequency in Hz (setpoint).",
     )
     p.add_argument(
         "--if-stop",
         type=float,
         required=True,
-        help="Stop IF frequency in Hz.",
+        help="Stop IF frequency in Hz (setpoint).",
     )
     p.add_argument(
         "--if-step",
@@ -1216,7 +1460,7 @@ def main():
         "--if-level-db",
         type=float,
         default=-10.0,
-        help="SMBV IF output level in dBm.",
+        help="SMA100B IF output level in dBm.",
     )
     p.add_argument(
         "--if-settle-s",
@@ -1225,7 +1469,7 @@ def main():
         help="Settling time after changing IF frequency (seconds).",
     )
 
-    # Mixer spur configuration (mirrors single-point scanner)
+    # Mixer spur configuration
     p.add_argument(
         "--mode",
         choices=["lo+if", "lo-if"],
@@ -1256,12 +1500,6 @@ def main():
         default=43e9,
         help="Maximum RF frequency to consider (Hz).",
     )
-    p.add_argument(
-        "--dedupe-freq",
-        type=float,
-        default=0.0,
-        help="Frequency bin for merging coincident products (Hz).",
-    )
 
     # Measurement settings
     p.add_argument(
@@ -1286,7 +1524,7 @@ def main():
         "--avg",
         type=int,
         default=10,
-        help="Sweeps to average per product.",
+        help="Sweeps to average per product / cluster.",
     )
     p.add_argument(
         "--timeout-ms",
@@ -1315,67 +1553,92 @@ def main():
         help="Minimum desired mixer product level (dBm) required.",
     )
 
-    # Overlap detection / remeasurement
+    # Topology / coincidences / clusters
     p.add_argument(
-        "--overlap-detect",
-        action="store_true",
-        help=(
-            "Enable spur overlap detection and automatic remeasurement "
-            "of contaminated weak spurs."
-        ),
-    )
-    p.add_argument(
-        "--overlap-local-thr-db",
-        type=float,
-        default=5.0,
-        help=(
-            "Local positive outlier threshold in dB for detecting "
-            "suspicious spur points (default 5 dB)."
-        ),
-    )
-    p.add_argument(
-        "--overlap-global-thr-db",
-        type=float,
-        default=15.0,
-        help=(
-            "Required median-plane level difference between strong spur B "
-            "and weak spur A in dB (default 15 dB)."
-        ),
-    )
-    p.add_argument(
-        "--overlap-equal-thr-db",
+        "--coincidence-factor",
         type=float,
         default=1.0,
+        help="RBW multiplier for analytic coincidence tolerance.",
+    )
+    p.add_argument(
+        "--measured-coincidence-factor",
+        type=float,
+        default=1.5,
+        help="RBW multiplier for measured coincidence tolerance.",
+    )
+    p.add_argument(
+        "--min-coincidence-hz",
+        type=float,
+        default=0.0,
+        help="Minimum absolute analytic coincidence tolerance in Hz.",
+    )
+    p.add_argument(
+        "--marker-confusion-factor",
+        type=float,
+        default=0.25,
+        help="Fraction of span used in cluster contamination limit.",
+    )
+    p.add_argument(
+        "--rbw-guard-factor",
+        type=float,
+        default=10.0,
+        help="RBW multiplier in cluster contamination limit.",
+    )
+    p.add_argument(
+        "--max-cluster-distance-hz",
+        type=float,
+        default=0.0,
         help=(
-            "Max allowed dB difference between measured A and B at the "
-            "overlap point (default 1 dB)."
+            "Hard upper bound on cluster contamination distance in Hz. "
+            "If > 0, cluster contamination_limit is capped at this value."
+        ),
+    )
+
+    # Δf / per-point correction
+    p.add_argument(
+        "--deltaf-low-order-sum",
+        type=int,
+        default=3,
+        help="Max (m+n) for full Δf application (weight=1.0).",
+    )
+    p.add_argument(
+        "--deltaf-mid-order-sum",
+        type=int,
+        default=5,
+        help="Max (m+n) for partial Δf application.",
+    )
+    p.add_argument(
+        "--deltaf-mid-weight",
+        type=float,
+        default=0.5,
+        help="Weight for Δf when low_order_sum < m+n <= mid_order_sum.",
+    )
+    p.add_argument(
+        "--cluster-max-window-rbw",
+        type=float,
+        default=100.0,
+        help=(
+            "Maximum half-window for cluster peak search, in units of RBW. "
+            "If <= 0, no cap is applied."
+        ),
+    )
+
+    # Calibration
+    p.add_argument(
+        "--calibrate-freq",
+        action="store_true",
+        help=(
+            "Use generator frequency readback as base for frequency model "
+            "instead of setpoints."
         ),
     )
     p.add_argument(
-        "--overlap-sep-rbw",
-        type=float,
-        default=5.0,
-        help=(
-            "Target frequency separation as multiple of RBW for remeasurement "
-            "perturbation (default 5)."
-        ),
-    )
-    p.add_argument(
-        "--max-remeasure-lo-shift-hz",
-        type=float,
+        "--calibration-file",
+        type=str,
         default=None,
         help=(
-            "Maximum allowed magnitude of LO shift in Hz during remeasurement. "
-            "If omitted, only sweep bounds are enforced."
-        ),
-    )
-    p.add_argument(
-        "--max-remeasure-if-shift-hz",
-        type=float,
-        default=None,
-        help=(
-            "Maximum allowed magnitude of IF shift in Hz during remeasurement. "
-            "If omitted, only sweep bounds are enforced."
+            "JSON file with linear calibration parameters for LO/IF "
+            "(see script header for format)."
         ),
     )
 
@@ -1404,15 +1667,6 @@ def main():
     if args.if_stop < args.if_start:
         raise RuntimeError("if-stop must be >= if-start")
 
-    if args.overlap_detect and args.dedupe_freq != 0.0:
-        print(
-            "WARNING: --overlap-detect used with non-zero --dedupe-freq.\n"
-            "         Overlap detection relies on multiple spur expressions "
-            "being present at the same RF. Frequency de-duplication can mask "
-            "overlaps by collapsing spurs into a single representative.\n"
-            "         Consider re-running with --dedupe-freq 0 for best results."
-        )
-
     lo_values = frange(args.lo_start, args.lo_stop, args.lo_step)
     if_values = frange(args.if_start, args.if_stop, args.if_step)
 
@@ -1421,39 +1675,40 @@ def main():
     total_points = len(lo_values) * len(if_values)
     print(f"Total (LO, IF) operating points: {total_points}")
 
-    # Create output directory
     out_dir = Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    # Make sure FSW driver is recent enough
     RsFsw.assert_minimum_version("5.0.0")
 
-    # Prepare containers
     master_rows: List[Dict[str, Any]] = []
 
-    # Connect to instruments
-    smab: Optional[RsSmab] = None
-    smbv: Optional[RsSmbv] = None
+    # Load simple calibration
+    cal_data = load_calibration_file(args.calibration_file)
+    cal_lo = cal_data.get("lo")
+    cal_if = cal_data.get("if")
+
+    smab: Optional[RsSmab] = None     # SMA100B (IF)
+    smf: Optional[RsInstrument] = None  # SMF100A (LO)
     fsw: Optional[RsFsw] = None
 
     try:
-        # LO source (SMA100B)
+        # LO source (SMF100A)
+        print(f"Connecting to SMF100A at '{args.smf_resource}' ...")
+        smf = RsInstrument(args.smf_resource, id_query=True, reset=args.smf_reset)
+        print(f"SMF100A IDN: {smf.idn_string}")
+
+        smf.write_str("OUTP:STAT ON")
+        smf.write_str("SOUR:FREQ:MODE CW")
+        smf.write_str(f"SOUR:POW:LEV:IMM:AMPL {args.lo_level_db} dBm")
+
+        # IF source (SMA100B)
         print(f"Connecting to SMA100B at '{args.sma_resource}' ...")
         smab = RsSmab(args.sma_resource, reset=args.sma_reset, id_query=True)
         print(f"SMA100B IDN: {smab.utilities.idn_string}")
 
         smab.output.state.set_value(True)
         smab.source.frequency.set_mode(smab_enums.FreqMode.CW)
-        smab.source.power.level.immediate.set_amplitude(args.lo_level_db)
-
-        # IF source (SMBV100A)
-        print(f"Connecting to SMBV100A at '{args.smbv_resource}' ...")
-        smbv = RsSmbv(args.smbv_resource, reset=args.smbv_reset, id_query=True)
-        print(f"SMBV100A IDN: {smbv.utilities.idn_string}")
-
-        smbv.output.state.set_value(True)
-        smbv.source.frequency.set_mode(smbv_enums.FreqMode.CW)
-        smbv.source.power.level.immediate.set_amplitude(args.if_level_db)
+        smab.source.power.level.immediate.set_amplitude(args.if_level_db)
 
         # Spectrum analyzer (FSW)
         print(f"Connecting to FSW at '{args.fsw_resource}' ...")
@@ -1462,7 +1717,6 @@ def main():
 
         fsw.instrument.select.set(fsw_enums.ChannelType.SpectrumAnalyzer)
         fsw.system.display.update.set(True)
-        # Start in continuous mode
         try:
             fsw.initiate.continuous.set(True)
         except Exception:
@@ -1470,44 +1724,64 @@ def main():
 
         point_index = 0
 
-        for lo_idx, lo_hz in enumerate(lo_values):
+        for lo_idx, lo_set_hz in enumerate(lo_values):
             print("\n============================================================")
-            print(f"LO = {lo_hz / 1e9:.6f} GHz ({lo_idx + 1}/{len(lo_values)})")
+            print(f"LO set = {lo_set_hz / 1e9:.6f} GHz ({lo_idx + 1}/{len(lo_values)})")
 
-            # Set LO frequency
-            smab.source.frequency.fixed.set_value(lo_hz)
+            # LO = SMF100A (generic instrument)
+            smf.write_str(f"SOUR:FREQ {lo_set_hz}")
 
-            # Optional LO settling
             if args.lo_settle_s and args.lo_settle_s > 0:
                 time.sleep(args.lo_settle_s)
 
-            for if_idx, if_hz in enumerate(if_values):
+            # Build LO model (SMF100A)
+            f_lo_model_hz = build_freq_model(
+                set_freq_hz=lo_set_hz,
+                readback_func=(
+                    lambda: smf.query_float("SOUR:FREQ?")
+                ) if args.calibrate_freq else None,
+                cal_entry=cal_lo,
+                use_readback=args.calibrate_freq,
+                instrument_name="SMF100A",
+            )
+
+            for if_idx, if_set_hz in enumerate(if_values):
                 point_index += 1
                 print("\n------------------------------------------------------------")
                 print(
                     f"[{point_index}/{total_points}] "
-                    f"LO = {lo_hz/1e9:.6f} GHz, IF = {if_hz/1e6:.3f} MHz"
+                    f"LO_set = {lo_set_hz / 1e9:.6f} GHz, IF_set = {if_set_hz / 1e6:.3f} MHz"
                 )
 
-                # Set IF frequency
-                smbv.source.frequency.fixed.set_value(if_hz)
+                # IF = SMA100B (RsSmab driver)
+                smab.source.frequency.fixed.set_value(if_set_hz)
 
-                # Optional IF settling
                 if args.if_settle_s and args.if_settle_s > 0:
                     time.sleep(args.if_settle_s)
 
-                # Run the spur scan for this point
+                # IF model (SMA100B)
+                f_if_model_hz = build_freq_model(
+                    set_freq_hz=if_set_hz,
+                    readback_func=(
+                        lambda: smab.utilities.query_float("SOUR:FREQ?")
+                    ) if args.calibrate_freq else None,
+                    cal_entry=cal_if,
+                    use_readback=args.calibrate_freq,
+                    instrument_name="SMA100B",
+                )
+
                 try:
                     results = measure_spurs_for_point(
                         fsw=fsw,
-                        lo_hz=lo_hz,
-                        if_hz=if_hz,
+                        lo_set_hz=lo_set_hz,
+                        if_set_hz=if_set_hz,
+                        f_lo_model_hz=f_lo_model_hz,
+                        f_if_model_hz=f_if_model_hz,
                         mode=args.mode,
                         m_max=args.m_max,
                         n_max=args.n_max,
                         f_min_hz=args.f_min,
                         f_max_hz=args.f_max,
-                        dedupe_freq_hz=args.dedupe_freq,
                         span_hz=args.span,
                         rbw_hz=args.rbw,
                         vbw_hz=args.vbw,
@@ -1516,22 +1790,33 @@ def main():
                         marker_mode=args.marker_mode,
                         min_power_db=args.min_power_db,
                         min_desired_db=args.min_desired_db,
+                        coincidence_factor=args.coincidence_factor,
+                        measured_coincidence_factor=args.measured_coincidence_factor,
+                        min_coincidence_hz=args.min_coincidence_hz,
+                        marker_confusion_factor=args.marker_confusion_factor,
+                        rbw_guard_factor=args.rbw_guard_factor,
+                        max_cluster_distance_hz=args.max_cluster_distance_hz,
+                        deltaf_low_order_sum=args.deltaf_low_order_sum,
+                        deltaf_mid_order_sum=args.deltaf_mid_order_sum,
+                        deltaf_mid_weight=args.deltaf_mid_weight,
+                        cluster_max_window_rbw=args.cluster_max_window_rbw,
                     )
                 except Exception as ex:
                     print(
                         "ERROR during spur scan at "
-                        f"LO={lo_hz/1e9:.6f} GHz, IF={if_hz/1e6:.3f} MHz: {ex}"
+                        f"LO_set={lo_set_hz / 1e9:.6f} GHz, IF_set={if_set_hz / 1e6:.3f} MHz: {ex}"
                     )
                     print("Skipping this point and continuing with sweep.")
                     continue
 
-                # Build rows for this point and append to master list
                 rows_for_point: List[Dict[str, Any]] = []
                 for r in results:
                     row = build_csv_row(
                         r=r,
-                        lo_hz=lo_hz,
-                        if_hz=if_hz,
+                        lo_set_hz=lo_set_hz,
+                        if_set_hz=if_set_hz,
+                        f_lo_model_hz=f_lo_model_hz,
+                        f_if_model_hz=f_if_model_hz,
                         mode=args.mode,
                         span_hz=args.span,
                         rbw_hz=args.rbw,
@@ -1545,10 +1830,9 @@ def main():
                     rows_for_point.append(row)
                     master_rows.append(row)
 
-                # Optionally write per-point CSV
                 if not args.no_per_point_csv:
-                    lo_ghz = lo_hz / 1e9
-                    if_mhz = if_hz / 1e6
+                    lo_ghz = lo_set_hz / 1e9
+                    if_mhz = if_set_hz / 1e6
                     csv_name = (
                         f"spur_results_lo_{lo_ghz:.6f}GHz_if_{if_mhz:.3f}MHz.csv"
                     )
@@ -1556,35 +1840,26 @@ def main():
 
                     print(f"Writing per-point CSV to '{csv_path}' ...")
                     with csv_path.open("w", newline="") as f:
-                        writer = csv.DictWriter(
-                            f, fieldnames=get_csv_fieldnames()
-                        )
+                        writer = csv.DictWriter(f, fieldnames=get_csv_fieldnames())
                         writer.writeheader()
                         for row in rows_for_point:
                             writer.writerow(row)
 
-        # --------------------------------------------------------------
-        # Overlap detection + remeasurement before closing instruments
-        # --------------------------------------------------------------
-        if args.overlap_detect and master_rows and fsw is not None and smab is not None and smbv is not None:
-            run_overlap_detection_and_remeasure(master_rows, fsw, smab, smbv, args)
-
     finally:
-        # Turn outputs off and close sessions
-        if smbv is not None:
-            print("\nTurning SMBV RF output OFF and closing session.")
+        if smf is not None:
+            print("\nTurning SMF100A (LO) RF output OFF and closing session.")
             try:
-                smbv.output.state.set_value(False)
+                smf.write_str("OUTP:STAT OFF")
             except Exception as ex:
-                print(f"WARNING: Failed to switch SMBV RF OFF cleanly: {ex}")
-            smbv.close()
+                print(f"WARNING: Failed to switch SMF LO RF OFF cleanly: {ex}")
+            smf.close()
 
         if smab is not None:
-            print("\nTurning SMA RF output OFF and closing session.")
+            print("\nTurning SMA100B (IF) RF output OFF and closing session.")
             try:
                 smab.output.state.set_value(False)
             except Exception as ex:
-                print(f"WARNING: Failed to switch SMA RF OFF cleanly: {ex}")
+                print(f"WARNING: Failed to switch SMA IF RF OFF cleanly: {ex}")
             smab.close()
 
         if fsw is not None:

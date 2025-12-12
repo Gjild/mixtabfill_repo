@@ -1,0 +1,4370 @@
+{
+  "lo2_hz": 22000000000.0,
+  "if1_start_hz": 950000000.0,
+  "if1_stop_hz": 2450000000.0,
+  "step_hz": 10000000.0,
+  "worst_overall": {
+    "if1_hz": 2360000000.0,
+    "tone_freq_hz": 28380000000.0,
+    "tone_level_dbc": -55.551105006445894,
+    "margin_to_spec_db": -4.448894993554106,
+    "required_additional_attenuation_db": 4.448894993554106,
+    "coincident": false,
+    "coincident_with_carrier_bin": false,
+    "num_contributors": 1,
+    "has_unknown_contributors": false,
+    "unknown_contributors_count": 0,
+    "unknown_combining_mode": "ignore",
+    "unknown_floor_dbc": -60.0,
+    "tone_level_dbc_known_only": -55.551105006445894,
+    "tone_level_dbc_conservative_unknown_floor": null,
+    "top_contributor": {
+      "origin": "translated_residual",
+      "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+      "dataset_id": "mixer1",
+      "family_id": {
+        "mode": "lo+if",
+        "kind": "spur",
+        "m": 2,
+        "n": 2,
+        "sign": -1,
+        "expression": "2*LO - 2*IF"
+      },
+      "lineage_row_indices": [
+        757
+      ],
+      "dbc": -55.5511050064459
+    }
+  },
+  "worst_by_if": [
+    {
+      "if1_hz": 950000000.0,
+      "worst_tone_freq_hz": 31000000000.0,
+      "worst_tone_level_dbc": -72.22931804137178,
+      "margin_to_spec_db": 12.229318041371783,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          2
+        ],
+        "dbc": -72.22931804137178
+      }
+    },
+    {
+      "if1_hz": 960000000.0,
+      "worst_tone_freq_hz": 30980000000.0,
+      "worst_tone_level_dbc": -72.04838874133331,
+      "margin_to_spec_db": 12.048388741333312,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          2,
+          8
+        ],
+        "dbc": -72.04838874133331
+      }
+    },
+    {
+      "if1_hz": 970000000.0,
+      "worst_tone_freq_hz": 30960000000.0,
+      "worst_tone_level_dbc": -71.67457763218864,
+      "margin_to_spec_db": 11.674577632188644,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          8,
+          13
+        ],
+        "dbc": -71.67457763218864
+      }
+    },
+    {
+      "if1_hz": 980000000.0,
+      "worst_tone_freq_hz": 30940000000.0,
+      "worst_tone_level_dbc": -71.1078847139378,
+      "margin_to_spec_db": 11.107884713937807,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          13
+        ],
+        "dbc": -71.1078847139378
+      }
+    },
+    {
+      "if1_hz": 990000000.0,
+      "worst_tone_freq_hz": 29530000000.0,
+      "worst_tone_level_dbc": -70.45074258173578,
+      "margin_to_spec_db": 10.450742581735781,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 1,
+          "n": 2,
+          "sign": 1,
+          "expression": "1*LO + 2*IF"
+        },
+        "lineage_row_indices": [
+          18,
+          25
+        ],
+        "dbc": -70.45074258173578
+      }
+    },
+    {
+      "if1_hz": 1000000000.0,
+      "worst_tone_freq_hz": 29550000000.0,
+      "worst_tone_level_dbc": -70.27536607150567,
+      "margin_to_spec_db": 10.275366071505672,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 1,
+          "n": 2,
+          "sign": 1,
+          "expression": "1*LO + 2*IF"
+        },
+        "lineage_row_indices": [
+          25,
+          33
+        ],
+        "dbc": -70.27536607150567
+      }
+    },
+    {
+      "if1_hz": 1010000000.0,
+      "worst_tone_freq_hz": 30880000000.0,
+      "worst_tone_level_dbc": -71.73297698444128,
+      "margin_to_spec_db": 11.73297698444128,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          23
+        ],
+        "dbc": -71.73297698444128
+      }
+    },
+    {
+      "if1_hz": 1020000000.0,
+      "worst_tone_freq_hz": 30860000000.0,
+      "worst_tone_level_dbc": -71.24886199219574,
+      "margin_to_spec_db": 11.248861992195742,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          23,
+          28
+        ],
+        "dbc": -71.24886199219574
+      }
+    },
+    {
+      "if1_hz": 1030000000.0,
+      "worst_tone_freq_hz": 30840000000.0,
+      "worst_tone_level_dbc": -70.56316079142877,
+      "margin_to_spec_db": 10.563160791428771,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          28,
+          33
+        ],
+        "dbc": -70.56316079142877
+      }
+    },
+    {
+      "if1_hz": 1040000000.0,
+      "worst_tone_freq_hz": 30820000000.0,
+      "worst_tone_level_dbc": -69.67587338214032,
+      "margin_to_spec_db": 9.675873382140324,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          33
+        ],
+        "dbc": -69.67587338214032
+      }
+    },
+    {
+      "if1_hz": 1050000000.0,
+      "worst_tone_freq_hz": 30800000000.0,
+      "worst_tone_level_dbc": -69.41145073758123,
+      "margin_to_spec_db": 9.411450737581234,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          33,
+          38
+        ],
+        "dbc": -69.41145073758123
+      }
+    },
+    {
+      "if1_hz": 1060000000.0,
+      "worst_tone_freq_hz": 29670000000.0,
+      "worst_tone_level_dbc": -69.25039491257219,
+      "margin_to_spec_db": 9.25039491257219,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 1,
+          "n": 2,
+          "sign": 1,
+          "expression": "1*LO + 2*IF"
+        },
+        "lineage_row_indices": [
+          57,
+          66
+        ],
+        "dbc": -69.25039491257219
+      }
+    },
+    {
+      "if1_hz": 1070000000.0,
+      "worst_tone_freq_hz": 30760000000.0,
+      "worst_tone_level_dbc": -69.4040152517725,
+      "margin_to_spec_db": 9.404015251772506,
+      "coincident": true,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          43
+        ],
+        "dbc": -69.40418791284233
+      }
+    },
+    {
+      "if1_hz": 1080000000.0,
+      "worst_tone_freq_hz": 30740000000.0,
+      "worst_tone_level_dbc": -69.42789135904066,
+      "margin_to_spec_db": 9.427891359040657,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          43,
+          48
+        ],
+        "dbc": -69.42789135904066
+      }
+    },
+    {
+      "if1_hz": 1090000000.0,
+      "worst_tone_freq_hz": 30720000000.0,
+      "worst_tone_level_dbc": -69.2837415221321,
+      "margin_to_spec_db": 9.283741522132104,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          48,
+          53
+        ],
+        "dbc": -69.2837415221321
+      }
+    },
+    {
+      "if1_hz": 1100000000.0,
+      "worst_tone_freq_hz": 30700000000.0,
+      "worst_tone_level_dbc": -68.97173840211669,
+      "margin_to_spec_db": 8.971738402116685,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          53
+        ],
+        "dbc": -68.97173840211669
+      }
+    },
+    {
+      "if1_hz": 1110000000.0,
+      "worst_tone_freq_hz": 30680000000.0,
+      "worst_tone_level_dbc": -68.63709524379736,
+      "margin_to_spec_db": 8.637095243797361,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          53,
+          58
+        ],
+        "dbc": -68.63709524379736
+      }
+    },
+    {
+      "if1_hz": 1120000000.0,
+      "worst_tone_freq_hz": 30660000000.0,
+      "worst_tone_level_dbc": -68.38958404290626,
+      "margin_to_spec_db": 8.389584042906264,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          58,
+          63
+        ],
+        "dbc": -68.38958404290626
+      }
+    },
+    {
+      "if1_hz": 1130000000.0,
+      "worst_tone_freq_hz": 30640000000.0,
+      "worst_tone_level_dbc": -68.2292047994434,
+      "margin_to_spec_db": 8.229204799443394,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          63
+        ],
+        "dbc": -68.2292047994434
+      }
+    },
+    {
+      "if1_hz": 1140000000.0,
+      "worst_tone_freq_hz": 30620000000.0,
+      "worst_tone_level_dbc": -68.22906301459072,
+      "margin_to_spec_db": 8.229063014590722,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          63,
+          68
+        ],
+        "dbc": -68.22906301459072
+      }
+    },
+    {
+      "if1_hz": 1150000000.0,
+      "worst_tone_freq_hz": 30600000000.0,
+      "worst_tone_level_dbc": -68.33991056919612,
+      "margin_to_spec_db": 8.339910569196121,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          68,
+          73
+        ],
+        "dbc": -68.33991056919612
+      }
+    },
+    {
+      "if1_hz": 1160000000.0,
+      "worst_tone_freq_hz": 30580000000.0,
+      "worst_tone_level_dbc": -68.54174746325961,
+      "margin_to_spec_db": 8.541747463259611,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          73
+        ],
+        "dbc": -68.54174746325961
+      }
+    },
+    {
+      "if1_hz": 1170000000.0,
+      "worst_tone_freq_hz": 30560000000.0,
+      "worst_tone_level_dbc": -68.38697179089239,
+      "margin_to_spec_db": 8.386971790892389,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          73,
+          78
+        ],
+        "dbc": -68.38697179089239
+      }
+    },
+    {
+      "if1_hz": 1180000000.0,
+      "worst_tone_freq_hz": 30540000000.0,
+      "worst_tone_level_dbc": -68.48076892014258,
+      "margin_to_spec_db": 8.48076892014258,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          78,
+          83
+        ],
+        "dbc": -68.48076892014258
+      }
+    },
+    {
+      "if1_hz": 1190000000.0,
+      "worst_tone_freq_hz": 30520000000.0,
+      "worst_tone_level_dbc": -68.82313885101016,
+      "margin_to_spec_db": 8.823138851010157,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          83
+        ],
+        "dbc": -68.82313885101016
+      }
+    },
+    {
+      "if1_hz": 1200000000.0,
+      "worst_tone_freq_hz": 30500000000.0,
+      "worst_tone_level_dbc": -69.50352014669724,
+      "margin_to_spec_db": 9.503520146697241,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          83,
+          88
+        ],
+        "dbc": -69.50352014669724
+      }
+    },
+    {
+      "if1_hz": 1210000000.0,
+      "worst_tone_freq_hz": 30480000000.0,
+      "worst_tone_level_dbc": -69.73934511611168,
+      "margin_to_spec_db": 9.739345116111679,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          88,
+          93
+        ],
+        "dbc": -69.73934511611168
+      }
+    },
+    {
+      "if1_hz": 1220000000.0,
+      "worst_tone_freq_hz": 29990000000.0,
+      "worst_tone_level_dbc": -68.94467287807853,
+      "margin_to_spec_db": 8.944672878078535,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 1,
+          "n": 2,
+          "sign": 1,
+          "expression": "1*LO + 2*IF"
+        },
+        "lineage_row_indices": [
+          153
+        ],
+        "dbc": -68.94467287807853
+      }
+    },
+    {
+      "if1_hz": 1230000000.0,
+      "worst_tone_freq_hz": 30010000000.0,
+      "worst_tone_level_dbc": -67.70753552100963,
+      "margin_to_spec_db": 7.707535521009632,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 1,
+          "n": 2,
+          "sign": 1,
+          "expression": "1*LO + 2*IF"
+        },
+        "lineage_row_indices": [
+          153,
+          160
+        ],
+        "dbc": -67.70753552100963
+      }
+    },
+    {
+      "if1_hz": 1240000000.0,
+      "worst_tone_freq_hz": 30030000000.0,
+      "worst_tone_level_dbc": -67.63528038197086,
+      "margin_to_spec_db": 7.635280381970858,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 1,
+          "n": 2,
+          "sign": 1,
+          "expression": "1*LO + 2*IF"
+        },
+        "lineage_row_indices": [
+          160,
+          168
+        ],
+        "dbc": -67.63528038197086
+      }
+    },
+    {
+      "if1_hz": 1250000000.0,
+      "worst_tone_freq_hz": 30400000000.0,
+      "worst_tone_level_dbc": -68.19838959770001,
+      "margin_to_spec_db": 8.198389597700015,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          103
+        ],
+        "dbc": -68.19838959770001
+      }
+    },
+    {
+      "if1_hz": 1260000000.0,
+      "worst_tone_freq_hz": 30380000000.0,
+      "worst_tone_level_dbc": -68.43946388322614,
+      "margin_to_spec_db": 8.43946388322614,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          103,
+          108
+        ],
+        "dbc": -68.43946388322614
+      }
+    },
+    {
+      "if1_hz": 1270000000.0,
+      "worst_tone_freq_hz": 30360000000.0,
+      "worst_tone_level_dbc": -68.59676200690818,
+      "margin_to_spec_db": 8.596762006908179,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          108,
+          113
+        ],
+        "dbc": -68.59676200690818
+      }
+    },
+    {
+      "if1_hz": 1280000000.0,
+      "worst_tone_freq_hz": 30340000000.0,
+      "worst_tone_level_dbc": -68.6702839687461,
+      "margin_to_spec_db": 8.670283968746105,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          113
+        ],
+        "dbc": -68.6702839687461
+      }
+    },
+    {
+      "if1_hz": 1290000000.0,
+      "worst_tone_freq_hz": 30320000000.0,
+      "worst_tone_level_dbc": -68.63127087481226,
+      "margin_to_spec_db": 8.631270874812259,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          113,
+          118
+        ],
+        "dbc": -68.63127087481226
+      }
+    },
+    {
+      "if1_hz": 1300000000.0,
+      "worst_tone_freq_hz": 30300000000.0,
+      "worst_tone_level_dbc": -68.58804936987315,
+      "margin_to_spec_db": 8.588049369873147,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          118,
+          123
+        ],
+        "dbc": -68.58804936987315
+      }
+    },
+    {
+      "if1_hz": 1310000000.0,
+      "worst_tone_freq_hz": 30280000000.0,
+      "worst_tone_level_dbc": -68.54061945392877,
+      "margin_to_spec_db": 8.54061945392877,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          123
+        ],
+        "dbc": -68.54061945392877
+      }
+    },
+    {
+      "if1_hz": 1320000000.0,
+      "worst_tone_freq_hz": 30260000000.0,
+      "worst_tone_level_dbc": -68.43044204008923,
+      "margin_to_spec_db": 8.430442040089233,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          123,
+          128
+        ],
+        "dbc": -68.43044204008923
+      }
+    },
+    {
+      "if1_hz": 1330000000.0,
+      "worst_tone_freq_hz": 30240000000.0,
+      "worst_tone_level_dbc": -68.4882837986467,
+      "margin_to_spec_db": 8.488283798646705,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          128,
+          133
+        ],
+        "dbc": -68.4882837986467
+      }
+    },
+    {
+      "if1_hz": 1340000000.0,
+      "worst_tone_freq_hz": 30220000000.0,
+      "worst_tone_level_dbc": -68.71414472960122,
+      "margin_to_spec_db": 8.714144729601216,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          133
+        ],
+        "dbc": -68.71414472960122
+      }
+    },
+    {
+      "if1_hz": 1350000000.0,
+      "worst_tone_freq_hz": 30200000000.0,
+      "worst_tone_level_dbc": -68.26782176172101,
+      "margin_to_spec_db": 8.26782176172101,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          133,
+          138
+        ],
+        "dbc": -68.26782176172101
+      }
+    },
+    {
+      "if1_hz": 1360000000.0,
+      "worst_tone_freq_hz": 30180000000.0,
+      "worst_tone_level_dbc": -67.80161119718656,
+      "margin_to_spec_db": 7.80161119718656,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          138,
+          143
+        ],
+        "dbc": -67.80161119718656
+      }
+    },
+    {
+      "if1_hz": 1370000000.0,
+      "worst_tone_freq_hz": 30160000000.0,
+      "worst_tone_level_dbc": -67.31551303599785,
+      "margin_to_spec_db": 7.315513035997853,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          143
+        ],
+        "dbc": -67.31551303599785
+      }
+    },
+    {
+      "if1_hz": 1380000000.0,
+      "worst_tone_freq_hz": 30140000000.0,
+      "worst_tone_level_dbc": -67.1768826977461,
+      "margin_to_spec_db": 7.176882697746095,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          143,
+          148
+        ],
+        "dbc": -67.1768826977461
+      }
+    },
+    {
+      "if1_hz": 1390000000.0,
+      "worst_tone_freq_hz": 30120000000.0,
+      "worst_tone_level_dbc": -67.04140462879332,
+      "margin_to_spec_db": 7.041404628793316,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          148,
+          153
+        ],
+        "dbc": -67.04140462879332
+      }
+    },
+    {
+      "if1_hz": 1400000000.0,
+      "worst_tone_freq_hz": 30100000000.0,
+      "worst_tone_level_dbc": -66.90907882913949,
+      "margin_to_spec_db": 6.909078829139489,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          153
+        ],
+        "dbc": -66.90907882913949
+      }
+    },
+    {
+      "if1_hz": 1410000000.0,
+      "worst_tone_freq_hz": 30080000000.0,
+      "worst_tone_level_dbc": -66.90489247912593,
+      "margin_to_spec_db": 6.904892479125934,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          153,
+          158
+        ],
+        "dbc": -66.90489247912593
+      }
+    },
+    {
+      "if1_hz": 1420000000.0,
+      "worst_tone_freq_hz": 30060000000.0,
+      "worst_tone_level_dbc": -66.81149313626216,
+      "margin_to_spec_db": 6.811493136262158,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          158,
+          163
+        ],
+        "dbc": -66.81149313626216
+      }
+    },
+    {
+      "if1_hz": 1430000000.0,
+      "worst_tone_freq_hz": 30040000000.0,
+      "worst_tone_level_dbc": -66.62888080054817,
+      "margin_to_spec_db": 6.628880800548174,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          163
+        ],
+        "dbc": -66.62888080054817
+      }
+    },
+    {
+      "if1_hz": 1440000000.0,
+      "worst_tone_freq_hz": 30020000000.0,
+      "worst_tone_level_dbc": -66.71111568590887,
+      "margin_to_spec_db": 6.711115685908865,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          163,
+          168
+        ],
+        "dbc": -66.71111568590887
+      }
+    },
+    {
+      "if1_hz": 1450000000.0,
+      "worst_tone_freq_hz": 30000000000.0,
+      "worst_tone_level_dbc": -67.04563978908735,
+      "margin_to_spec_db": 7.045639789087346,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          168,
+          173
+        ],
+        "dbc": -67.04563978908735
+      }
+    },
+    {
+      "if1_hz": 1460000000.0,
+      "worst_tone_freq_hz": 29980000000.0,
+      "worst_tone_level_dbc": -67.6324531100836,
+      "margin_to_spec_db": 7.632453110083603,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          173
+        ],
+        "dbc": -67.6324531100836
+      }
+    },
+    {
+      "if1_hz": 1470000000.0,
+      "worst_tone_freq_hz": 30160000000.0,
+      "worst_tone_level_dbc": -67.00069999114379,
+      "margin_to_spec_db": 7.00069999114379,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          280,
+          288
+        ],
+        "dbc": -67.00069999114379
+      }
+    },
+    {
+      "if1_hz": 1480000000.0,
+      "worst_tone_freq_hz": 30140000000.0,
+      "worst_tone_level_dbc": -64.2769604947524,
+      "margin_to_spec_db": 4.276960494752402,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          288,
+          296
+        ],
+        "dbc": -64.2769604947524
+      }
+    },
+    {
+      "if1_hz": 1490000000.0,
+      "worst_tone_freq_hz": 30120000000.0,
+      "worst_tone_level_dbc": -61.75402240457102,
+      "margin_to_spec_db": 1.7540224045710175,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          296
+        ],
+        "dbc": -61.75402240457102
+      }
+    },
+    {
+      "if1_hz": 1500000000.0,
+      "worst_tone_freq_hz": 30100000000.0,
+      "worst_tone_level_dbc": -60.914002772974015,
+      "margin_to_spec_db": 0.9140027729740154,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          296,
+          304
+        ],
+        "dbc": -60.914002772974015
+      }
+    },
+    {
+      "if1_hz": 1510000000.0,
+      "worst_tone_freq_hz": 30080000000.0,
+      "worst_tone_level_dbc": -60.96042921150957,
+      "margin_to_spec_db": 0.9604292115095703,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          304,
+          312
+        ],
+        "dbc": -60.96042921150957
+      }
+    },
+    {
+      "if1_hz": 1520000000.0,
+      "worst_tone_freq_hz": 30060000000.0,
+      "worst_tone_level_dbc": -62.00551536393889,
+      "margin_to_spec_db": 2.0055153639388905,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          312
+        ],
+        "dbc": -62.00551536393889
+      }
+    },
+    {
+      "if1_hz": 1530000000.0,
+      "worst_tone_freq_hz": 30040000000.0,
+      "worst_tone_level_dbc": -63.26579326829369,
+      "margin_to_spec_db": 3.2657932682936917,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          312,
+          319
+        ],
+        "dbc": -63.26579326829369
+      }
+    },
+    {
+      "if1_hz": 1540000000.0,
+      "worst_tone_freq_hz": 30020000000.0,
+      "worst_tone_level_dbc": -63.646455661334315,
+      "margin_to_spec_db": 3.646455661334315,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          319,
+          327
+        ],
+        "dbc": -63.646455661334315
+      }
+    },
+    {
+      "if1_hz": 1550000000.0,
+      "worst_tone_freq_hz": 30000000000.0,
+      "worst_tone_level_dbc": -63.19575271476728,
+      "margin_to_spec_db": 3.1957527147672806,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          327
+        ],
+        "dbc": -63.19575271476728
+      }
+    },
+    {
+      "if1_hz": 1560000000.0,
+      "worst_tone_freq_hz": 29980000000.0,
+      "worst_tone_level_dbc": -62.80960631714063,
+      "margin_to_spec_db": 2.809606317140627,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          327,
+          335
+        ],
+        "dbc": -62.80960631714063
+      }
+    },
+    {
+      "if1_hz": 1570000000.0,
+      "worst_tone_freq_hz": 29960000000.0,
+      "worst_tone_level_dbc": -63.75677267147652,
+      "margin_to_spec_db": 3.7567726714765186,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          335,
+          343
+        ],
+        "dbc": -63.75677267147652
+      }
+    },
+    {
+      "if1_hz": 1580000000.0,
+      "worst_tone_freq_hz": 29740000000.0,
+      "worst_tone_level_dbc": -65.592926562491,
+      "margin_to_spec_db": 5.592926562491002,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "mixer2_family",
+        "stage_path": "mixer2_family -> rf_filter",
+        "dataset_id": "mixer2_lo2_22GHz",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          205
+        ],
+        "dbc": -65.592926562491
+      }
+    },
+    {
+      "if1_hz": 1590000000.0,
+      "worst_tone_freq_hz": 29920000000.0,
+      "worst_tone_level_dbc": -63.78964307291392,
+      "margin_to_spec_db": 3.7896430729139183,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          343,
+          350
+        ],
+        "dbc": -63.78964307291392
+      }
+    },
+    {
+      "if1_hz": 1600000000.0,
+      "worst_tone_freq_hz": 29900000000.0,
+      "worst_tone_level_dbc": -61.74043794748763,
+      "margin_to_spec_db": 1.740437947487628,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          350,
+          358
+        ],
+        "dbc": -61.74043794748763
+      }
+    },
+    {
+      "if1_hz": 1610000000.0,
+      "worst_tone_freq_hz": 29880000000.0,
+      "worst_tone_level_dbc": -60.05235981634647,
+      "margin_to_spec_db": 0.052359816346466914,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          358
+        ],
+        "dbc": -60.05235981634647
+      }
+    },
+    {
+      "if1_hz": 1620000000.0,
+      "worst_tone_freq_hz": 29860000000.0,
+      "worst_tone_level_dbc": -60.35095678386001,
+      "margin_to_spec_db": 0.3509567838600134,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          358,
+          366
+        ],
+        "dbc": -60.35095678386001
+      }
+    },
+    {
+      "if1_hz": 1630000000.0,
+      "worst_tone_freq_hz": 29840000000.0,
+      "worst_tone_level_dbc": -60.99566120051604,
+      "margin_to_spec_db": 0.9956612005160395,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          366,
+          374
+        ],
+        "dbc": -60.99566120051604
+      }
+    },
+    {
+      "if1_hz": 1640000000.0,
+      "worst_tone_freq_hz": 29820000000.0,
+      "worst_tone_level_dbc": -61.95258933738438,
+      "margin_to_spec_db": 1.9525893373843815,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          374
+        ],
+        "dbc": -61.95258933738438
+      }
+    },
+    {
+      "if1_hz": 1650000000.0,
+      "worst_tone_freq_hz": 29800000000.0,
+      "worst_tone_level_dbc": -61.83364228066775,
+      "margin_to_spec_db": 1.8336422806677533,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          374,
+          382
+        ],
+        "dbc": -61.83364228066775
+      }
+    },
+    {
+      "if1_hz": 1660000000.0,
+      "worst_tone_freq_hz": 29780000000.0,
+      "worst_tone_level_dbc": -61.50382090479919,
+      "margin_to_spec_db": 1.5038209047991913,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          382,
+          391
+        ],
+        "dbc": -61.50382090479919
+      }
+    },
+    {
+      "if1_hz": 1670000000.0,
+      "worst_tone_freq_hz": 29760000000.0,
+      "worst_tone_level_dbc": -60.94332408318769,
+      "margin_to_spec_db": 0.9433240831876901,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          391
+        ],
+        "dbc": -60.94332408318768
+      }
+    },
+    {
+      "if1_hz": 1680000000.0,
+      "worst_tone_freq_hz": 29740000000.0,
+      "worst_tone_level_dbc": -61.90281554770378,
+      "margin_to_spec_db": 1.9028155477037814,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          391,
+          400
+        ],
+        "dbc": -61.90281554770378
+      }
+    },
+    {
+      "if1_hz": 1690000000.0,
+      "worst_tone_freq_hz": 29720000000.0,
+      "worst_tone_level_dbc": -62.359904637698016,
+      "margin_to_spec_db": 2.3599046376980155,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          400,
+          409
+        ],
+        "dbc": -62.359904637698016
+      }
+    },
+    {
+      "if1_hz": 1700000000.0,
+      "worst_tone_freq_hz": 29700000000.0,
+      "worst_tone_level_dbc": -62.31459135317039,
+      "margin_to_spec_db": 2.3145913531703926,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          409
+        ],
+        "dbc": -62.31459135317039
+      }
+    },
+    {
+      "if1_hz": 1710000000.0,
+      "worst_tone_freq_hz": 29680000000.0,
+      "worst_tone_level_dbc": -61.3040691494178,
+      "margin_to_spec_db": 1.3040691494177992,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          409,
+          418
+        ],
+        "dbc": -61.3040691494178
+      }
+    },
+    {
+      "if1_hz": 1720000000.0,
+      "worst_tone_freq_hz": 29660000000.0,
+      "worst_tone_level_dbc": -60.898226539561406,
+      "margin_to_spec_db": 0.8982265395614064,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          418,
+          427
+        ],
+        "dbc": -60.898226539561406
+      }
+    },
+    {
+      "if1_hz": 1730000000.0,
+      "worst_tone_freq_hz": 29640000000.0,
+      "worst_tone_level_dbc": -61.09455341868207,
+      "margin_to_spec_db": 1.094553418682068,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          427
+        ],
+        "dbc": -61.09455341868207
+      }
+    },
+    {
+      "if1_hz": 1740000000.0,
+      "worst_tone_freq_hz": 29620000000.0,
+      "worst_tone_level_dbc": -61.68893159695176,
+      "margin_to_spec_db": 1.688931596951761,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          427,
+          435
+        ],
+        "dbc": -61.68893159695176
+      }
+    },
+    {
+      "if1_hz": 1750000000.0,
+      "worst_tone_freq_hz": 29600000000.0,
+      "worst_tone_level_dbc": -61.412907925777404,
+      "margin_to_spec_db": 1.4129079257774038,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          435,
+          443
+        ],
+        "dbc": -61.4129079257774
+      }
+    },
+    {
+      "if1_hz": 1760000000.0,
+      "worst_tone_freq_hz": 29580000000.0,
+      "worst_tone_level_dbc": -60.272910853731396,
+      "margin_to_spec_db": 0.27291085373139623,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          443
+        ],
+        "dbc": -60.272910853731396
+      }
+    },
+    {
+      "if1_hz": 1770000000.0,
+      "worst_tone_freq_hz": 29560000000.0,
+      "worst_tone_level_dbc": -59.65495678761633,
+      "margin_to_spec_db": -0.34504321238367197,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          443,
+          451
+        ],
+        "dbc": -59.65495678761633
+      }
+    },
+    {
+      "if1_hz": 1780000000.0,
+      "worst_tone_freq_hz": 29540000000.0,
+      "worst_tone_level_dbc": -59.86495299753056,
+      "margin_to_spec_db": -0.13504700246944168,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          451,
+          459
+        ],
+        "dbc": -59.86495299753056
+      }
+    },
+    {
+      "if1_hz": 1790000000.0,
+      "worst_tone_freq_hz": 29520000000.0,
+      "worst_tone_level_dbc": -60.90289948347407,
+      "margin_to_spec_db": 0.9028994834740729,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          459
+        ],
+        "dbc": -60.90289948347407
+      }
+    },
+    {
+      "if1_hz": 1800000000.0,
+      "worst_tone_freq_hz": 29500000000.0,
+      "worst_tone_level_dbc": -63.26311986521606,
+      "margin_to_spec_db": 3.263119865216062,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          459,
+          467
+        ],
+        "dbc": -63.26311986521606
+      }
+    },
+    {
+      "if1_hz": 1810000000.0,
+      "worst_tone_freq_hz": 29480000000.0,
+      "worst_tone_level_dbc": -63.44157843728424,
+      "margin_to_spec_db": 3.4415784372842424,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          467,
+          474
+        ],
+        "dbc": -63.44157843728424
+      }
+    },
+    {
+      "if1_hz": 1820000000.0,
+      "worst_tone_freq_hz": 29460000000.0,
+      "worst_tone_level_dbc": -61.38876158442389,
+      "margin_to_spec_db": 1.3887615844238894,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          474
+        ],
+        "dbc": -61.38876158442389
+      }
+    },
+    {
+      "if1_hz": 1830000000.0,
+      "worst_tone_freq_hz": 29440000000.0,
+      "worst_tone_level_dbc": -59.72766595712567,
+      "margin_to_spec_db": -0.27233404287432705,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          474,
+          481
+        ],
+        "dbc": -59.72766595712567
+      }
+    },
+    {
+      "if1_hz": 1840000000.0,
+      "worst_tone_freq_hz": 29420000000.0,
+      "worst_tone_level_dbc": -59.315204094658974,
+      "margin_to_spec_db": -0.6847959053410264,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          481,
+          495
+        ],
+        "dbc": -59.315204094658974
+      }
+    },
+    {
+      "if1_hz": 1850000000.0,
+      "worst_tone_freq_hz": 29400000000.0,
+      "worst_tone_level_dbc": -60.179670489923396,
+      "margin_to_spec_db": 0.17967048992339585,
+      "coincident": true,
+      "coincident_with_carrier_bin": true,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          481,
+          495
+        ],
+        "dbc": -60.17968540691214
+      }
+    },
+    {
+      "if1_hz": 1860000000.0,
+      "worst_tone_freq_hz": 29380000000.0,
+      "worst_tone_level_dbc": -61.044166719165304,
+      "margin_to_spec_db": 1.044166719165304,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          481,
+          495
+        ],
+        "dbc": -61.044166719165304
+      }
+    },
+    {
+      "if1_hz": 1870000000.0,
+      "worst_tone_freq_hz": 29360000000.0,
+      "worst_tone_level_dbc": -61.657736736301196,
+      "margin_to_spec_db": 1.657736736301196,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          495,
+          502
+        ],
+        "dbc": -61.657736736301196
+      }
+    },
+    {
+      "if1_hz": 1880000000.0,
+      "worst_tone_freq_hz": 29340000000.0,
+      "worst_tone_level_dbc": -62.02039545831981,
+      "margin_to_spec_db": 2.020395458319811,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          502
+        ],
+        "dbc": -62.02039545831982
+      }
+    },
+    {
+      "if1_hz": 1890000000.0,
+      "worst_tone_freq_hz": 29320000000.0,
+      "worst_tone_level_dbc": -60.53427736782636,
+      "margin_to_spec_db": 0.5342773678263626,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          502,
+          509
+        ],
+        "dbc": -60.534277367826355
+      }
+    },
+    {
+      "if1_hz": 1900000000.0,
+      "worst_tone_freq_hz": 29300000000.0,
+      "worst_tone_level_dbc": -59.50757122422403,
+      "margin_to_spec_db": -0.49242877577597,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          509,
+          516
+        ],
+        "dbc": -59.50757122422403
+      }
+    },
+    {
+      "if1_hz": 1910000000.0,
+      "worst_tone_freq_hz": 29280000000.0,
+      "worst_tone_level_dbc": -58.92612232256866,
+      "margin_to_spec_db": -1.0738776774313408,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          516
+        ],
+        "dbc": -58.92612232256866
+      }
+    },
+    {
+      "if1_hz": 1920000000.0,
+      "worst_tone_freq_hz": 29260000000.0,
+      "worst_tone_level_dbc": -59.84482502290355,
+      "margin_to_spec_db": -0.15517497709645056,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          516,
+          523
+        ],
+        "dbc": -59.84482502290355
+      }
+    },
+    {
+      "if1_hz": 1930000000.0,
+      "worst_tone_freq_hz": 29240000000.0,
+      "worst_tone_level_dbc": -60.59062262078096,
+      "margin_to_spec_db": 0.5906226207809624,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          523,
+          531
+        ],
+        "dbc": -60.59062262078096
+      }
+    },
+    {
+      "if1_hz": 1940000000.0,
+      "worst_tone_freq_hz": 29220000000.0,
+      "worst_tone_level_dbc": -61.1635151162009,
+      "margin_to_spec_db": 1.163515116200898,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          531
+        ],
+        "dbc": -61.163515116200905
+      }
+    },
+    {
+      "if1_hz": 1950000000.0,
+      "worst_tone_freq_hz": 29200000000.0,
+      "worst_tone_level_dbc": -60.57034309591341,
+      "margin_to_spec_db": 0.5703430959134081,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          531,
+          539
+        ],
+        "dbc": -60.57034309591341
+      }
+    },
+    {
+      "if1_hz": 1960000000.0,
+      "worst_tone_freq_hz": 29180000000.0,
+      "worst_tone_level_dbc": -59.86050761981795,
+      "margin_to_spec_db": -0.13949238018204824,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          539,
+          547
+        ],
+        "dbc": -59.86050761981795
+      }
+    },
+    {
+      "if1_hz": 1970000000.0,
+      "worst_tone_freq_hz": 29160000000.0,
+      "worst_tone_level_dbc": -59.086891726895686,
+      "margin_to_spec_db": -0.9131082731043136,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          547
+        ],
+        "dbc": -59.086891726895686
+      }
+    },
+    {
+      "if1_hz": 1980000000.0,
+      "worst_tone_freq_hz": 29140000000.0,
+      "worst_tone_level_dbc": -58.639444486012536,
+      "margin_to_spec_db": -1.3605555139874639,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          547,
+          555
+        ],
+        "dbc": -58.639444486012536
+      }
+    },
+    {
+      "if1_hz": 1990000000.0,
+      "worst_tone_freq_hz": 29120000000.0,
+      "worst_tone_level_dbc": -58.29567447508718,
+      "margin_to_spec_db": -1.704325524912818,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          555,
+          563
+        ],
+        "dbc": -58.29567447508718
+      }
+    },
+    {
+      "if1_hz": 2000000000.0,
+      "worst_tone_freq_hz": 29100000000.0,
+      "worst_tone_level_dbc": -58.05558169411961,
+      "margin_to_spec_db": -1.94441830588039,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          563
+        ],
+        "dbc": -58.05558169411961
+      }
+    },
+    {
+      "if1_hz": 2010000000.0,
+      "worst_tone_freq_hz": 29080000000.0,
+      "worst_tone_level_dbc": -58.63474622094182,
+      "margin_to_spec_db": -1.365253779058179,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          563,
+          571
+        ],
+        "dbc": -58.63474622094183
+      }
+    },
+    {
+      "if1_hz": 2020000000.0,
+      "worst_tone_freq_hz": 29060000000.0,
+      "worst_tone_level_dbc": -59.6684162933148,
+      "margin_to_spec_db": -0.3315837066852012,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          571,
+          579
+        ],
+        "dbc": -59.6684162933148
+      }
+    },
+    {
+      "if1_hz": 2030000000.0,
+      "worst_tone_freq_hz": 29040000000.0,
+      "worst_tone_level_dbc": -61.15659191123852,
+      "margin_to_spec_db": 1.1565919112385217,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          579
+        ],
+        "dbc": -61.15659191123852
+      }
+    },
+    {
+      "if1_hz": 2040000000.0,
+      "worst_tone_freq_hz": 29020000000.0,
+      "worst_tone_level_dbc": -61.339963455693166,
+      "margin_to_spec_db": 1.3399634556931659,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          579,
+          586
+        ],
+        "dbc": -61.339963455693166
+      }
+    },
+    {
+      "if1_hz": 2050000000.0,
+      "worst_tone_freq_hz": 29000000000.0,
+      "worst_tone_level_dbc": -60.567978405790384,
+      "margin_to_spec_db": 0.5679784057903845,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          586,
+          593
+        ],
+        "dbc": -60.567978405790384
+      }
+    },
+    {
+      "if1_hz": 2060000000.0,
+      "worst_tone_freq_hz": 28980000000.0,
+      "worst_tone_level_dbc": -58.83947845829661,
+      "margin_to_spec_db": -1.160521541703389,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          593
+        ],
+        "dbc": -58.83947845829661
+      }
+    },
+    {
+      "if1_hz": 2070000000.0,
+      "worst_tone_freq_hz": 28960000000.0,
+      "worst_tone_level_dbc": -58.141206279890795,
+      "margin_to_spec_db": -1.8587937201092046,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          593,
+          600
+        ],
+        "dbc": -58.141206279890795
+      }
+    },
+    {
+      "if1_hz": 2080000000.0,
+      "worst_tone_freq_hz": 28940000000.0,
+      "worst_tone_level_dbc": -58.25715869692821,
+      "margin_to_spec_db": -1.742841303071792,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          600,
+          607
+        ],
+        "dbc": -58.25715869692821
+      }
+    },
+    {
+      "if1_hz": 2090000000.0,
+      "worst_tone_freq_hz": 28920000000.0,
+      "worst_tone_level_dbc": -59.18733570940881,
+      "margin_to_spec_db": -0.8126642905911865,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          607
+        ],
+        "dbc": -59.18733570940882
+      }
+    },
+    {
+      "if1_hz": 2100000000.0,
+      "worst_tone_freq_hz": 28900000000.0,
+      "worst_tone_level_dbc": -60.98474940763648,
+      "margin_to_spec_db": 0.9847494076364782,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          607,
+          614
+        ],
+        "dbc": -60.98474940763648
+      }
+    },
+    {
+      "if1_hz": 2110000000.0,
+      "worst_tone_freq_hz": 28880000000.0,
+      "worst_tone_level_dbc": -60.8333593725525,
+      "margin_to_spec_db": 0.8333593725525006,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          614,
+          623
+        ],
+        "dbc": -60.8333593725525
+      }
+    },
+    {
+      "if1_hz": 2120000000.0,
+      "worst_tone_freq_hz": 28860000000.0,
+      "worst_tone_level_dbc": -58.73442065661645,
+      "margin_to_spec_db": -1.2655793433835498,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          623
+        ],
+        "dbc": -58.73442065661645
+      }
+    },
+    {
+      "if1_hz": 2130000000.0,
+      "worst_tone_freq_hz": 28840000000.0,
+      "worst_tone_level_dbc": -57.33020914323929,
+      "margin_to_spec_db": -2.669790856760713,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          623,
+          632
+        ],
+        "dbc": -57.33020914323928
+      }
+    },
+    {
+      "if1_hz": 2140000000.0,
+      "worst_tone_freq_hz": 28820000000.0,
+      "worst_tone_level_dbc": -56.976774401322075,
+      "margin_to_spec_db": -3.023225598677925,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          632,
+          641
+        ],
+        "dbc": -56.976774401322075
+      }
+    },
+    {
+      "if1_hz": 2150000000.0,
+      "worst_tone_freq_hz": 28800000000.0,
+      "worst_tone_level_dbc": -57.693700819644256,
+      "margin_to_spec_db": -2.3062991803557438,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          641
+        ],
+        "dbc": -57.693700819644256
+      }
+    },
+    {
+      "if1_hz": 2160000000.0,
+      "worst_tone_freq_hz": 28780000000.0,
+      "worst_tone_level_dbc": -59.19888494925834,
+      "margin_to_spec_db": -0.8011150507416573,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          641,
+          650
+        ],
+        "dbc": -59.19888494925834
+      }
+    },
+    {
+      "if1_hz": 2170000000.0,
+      "worst_tone_freq_hz": 28760000000.0,
+      "worst_tone_level_dbc": -59.7204089901375,
+      "margin_to_spec_db": -0.2795910098625001,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          650,
+          659
+        ],
+        "dbc": -59.72040899013751
+      }
+    },
+    {
+      "if1_hz": 2180000000.0,
+      "worst_tone_freq_hz": 28740000000.0,
+      "worst_tone_level_dbc": -59.246240856720235,
+      "margin_to_spec_db": -0.7537591432797655,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          659
+        ],
+        "dbc": -59.24624085672024
+      }
+    },
+    {
+      "if1_hz": 2190000000.0,
+      "worst_tone_freq_hz": 28720000000.0,
+      "worst_tone_level_dbc": -58.11959570014299,
+      "margin_to_spec_db": -1.8804042998570125,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          659,
+          668
+        ],
+        "dbc": -58.11959570014299
+      }
+    },
+    {
+      "if1_hz": 2200000000.0,
+      "worst_tone_freq_hz": 28700000000.0,
+      "worst_tone_level_dbc": -57.367049935931,
+      "margin_to_spec_db": -2.632950064069,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          668,
+          677
+        ],
+        "dbc": -57.367049935931
+      }
+    },
+    {
+      "if1_hz": 2210000000.0,
+      "worst_tone_freq_hz": 28680000000.0,
+      "worst_tone_level_dbc": -56.94412378174072,
+      "margin_to_spec_db": -3.0558762182592787,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          677
+        ],
+        "dbc": -56.94412378174072
+      }
+    },
+    {
+      "if1_hz": 2220000000.0,
+      "worst_tone_freq_hz": 28660000000.0,
+      "worst_tone_level_dbc": -57.23921426767497,
+      "margin_to_spec_db": -2.760785732325033,
+      "coincident": true,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          677,
+          685
+        ],
+        "dbc": -57.25199024782148
+      }
+    },
+    {
+      "if1_hz": 2230000000.0,
+      "worst_tone_freq_hz": 28640000000.0,
+      "worst_tone_level_dbc": -57.58219573554227,
+      "margin_to_spec_db": -2.417804264457729,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          685,
+          694
+        ],
+        "dbc": -57.58219573554227
+      }
+    },
+    {
+      "if1_hz": 2240000000.0,
+      "worst_tone_freq_hz": 28620000000.0,
+      "worst_tone_level_dbc": -57.93493911831209,
+      "margin_to_spec_db": -2.065060881687913,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          694
+        ],
+        "dbc": -57.93493911831209
+      }
+    },
+    {
+      "if1_hz": 2250000000.0,
+      "worst_tone_freq_hz": 28600000000.0,
+      "worst_tone_level_dbc": -59.26242399875092,
+      "margin_to_spec_db": -0.7375760012490815,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          694,
+          703
+        ],
+        "dbc": -59.26242399875092
+      }
+    },
+    {
+      "if1_hz": 2260000000.0,
+      "worst_tone_freq_hz": 28580000000.0,
+      "worst_tone_level_dbc": -60.03885901049185,
+      "margin_to_spec_db": 0.03885901049184781,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          703,
+          711
+        ],
+        "dbc": -60.03885901049185
+      }
+    },
+    {
+      "if1_hz": 2270000000.0,
+      "worst_tone_freq_hz": 28560000000.0,
+      "worst_tone_level_dbc": -60.25531182092179,
+      "margin_to_spec_db": 0.25531182092178994,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          711
+        ],
+        "dbc": -60.25531182092178
+      }
+    },
+    {
+      "if1_hz": 2280000000.0,
+      "worst_tone_freq_hz": 28540000000.0,
+      "worst_tone_level_dbc": -58.256006578013825,
+      "margin_to_spec_db": -1.7439934219861755,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          711,
+          719
+        ],
+        "dbc": -58.256006578013825
+      }
+    },
+    {
+      "if1_hz": 2290000000.0,
+      "worst_tone_freq_hz": 28520000000.0,
+      "worst_tone_level_dbc": -57.00996935904424,
+      "margin_to_spec_db": -2.9900306409557587,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          719,
+          727
+        ],
+        "dbc": -57.00996935904424
+      }
+    },
+    {
+      "if1_hz": 2300000000.0,
+      "worst_tone_freq_hz": 28500000000.0,
+      "worst_tone_level_dbc": -56.53195016094507,
+      "margin_to_spec_db": -3.4680498390549275,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          727
+        ],
+        "dbc": -56.53195016094507
+      }
+    },
+    {
+      "if1_hz": 2310000000.0,
+      "worst_tone_freq_hz": 28480000000.0,
+      "worst_tone_level_dbc": -56.98485661212075,
+      "margin_to_spec_db": -3.015143387879249,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          727,
+          735
+        ],
+        "dbc": -56.98485661212075
+      }
+    },
+    {
+      "if1_hz": 2320000000.0,
+      "worst_tone_freq_hz": 28460000000.0,
+      "worst_tone_level_dbc": -58.189798244091975,
+      "margin_to_spec_db": -1.8102017559080252,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          735,
+          743
+        ],
+        "dbc": -58.189798244091975
+      }
+    },
+    {
+      "if1_hz": 2330000000.0,
+      "worst_tone_freq_hz": 28440000000.0,
+      "worst_tone_level_dbc": -60.15456738065697,
+      "margin_to_spec_db": 0.15456738065697095,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          743
+        ],
+        "dbc": -60.15456738065697
+      }
+    },
+    {
+      "if1_hz": 2340000000.0,
+      "worst_tone_freq_hz": 28420000000.0,
+      "worst_tone_level_dbc": -58.63678917723635,
+      "margin_to_spec_db": -1.363210822763648,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          743,
+          750
+        ],
+        "dbc": -58.63678917723635
+      }
+    },
+    {
+      "if1_hz": 2350000000.0,
+      "worst_tone_freq_hz": 28400000000.0,
+      "worst_tone_level_dbc": -57.10261929748991,
+      "margin_to_spec_db": -2.897380702510091,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          750,
+          757
+        ],
+        "dbc": -57.10261929748991
+      }
+    },
+    {
+      "if1_hz": 2360000000.0,
+      "worst_tone_freq_hz": 28380000000.0,
+      "worst_tone_level_dbc": -55.551105006445894,
+      "margin_to_spec_db": -4.448894993554106,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          757
+        ],
+        "dbc": -55.5511050064459
+      }
+    },
+    {
+      "if1_hz": 2370000000.0,
+      "worst_tone_freq_hz": 28360000000.0,
+      "worst_tone_level_dbc": -55.74068603329696,
+      "margin_to_spec_db": -4.25931396670304,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          757,
+          764
+        ],
+        "dbc": -55.74068603329696
+      }
+    },
+    {
+      "if1_hz": 2380000000.0,
+      "worst_tone_freq_hz": 28340000000.0,
+      "worst_tone_level_dbc": -56.13051616950682,
+      "margin_to_spec_db": -3.8694838304931807,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          764,
+          770
+        ],
+        "dbc": -56.13051616950682
+      }
+    },
+    {
+      "if1_hz": 2390000000.0,
+      "worst_tone_freq_hz": 28320000000.0,
+      "worst_tone_level_dbc": -56.71617259331518,
+      "margin_to_spec_db": -3.2838274066848214,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          770
+        ],
+        "dbc": -56.71617259331517
+      }
+    },
+    {
+      "if1_hz": 2400000000.0,
+      "worst_tone_freq_hz": 28300000000.0,
+      "worst_tone_level_dbc": -57.43353562458458,
+      "margin_to_spec_db": -2.5664643754154213,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          770,
+          777
+        ],
+        "dbc": -57.43353562458457
+      }
+    },
+    {
+      "if1_hz": 2410000000.0,
+      "worst_tone_freq_hz": 28280000000.0,
+      "worst_tone_level_dbc": -58.11027997079721,
+      "margin_to_spec_db": -1.8897200292027918,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          777,
+          784
+        ],
+        "dbc": -58.11027997079721
+      }
+    },
+    {
+      "if1_hz": 2420000000.0,
+      "worst_tone_freq_hz": 28260000000.0,
+      "worst_tone_level_dbc": -58.57283428728202,
+      "margin_to_spec_db": -1.4271657127179793,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          784
+        ],
+        "dbc": -58.57283428728202
+      }
+    },
+    {
+      "if1_hz": 2430000000.0,
+      "worst_tone_freq_hz": 28240000000.0,
+      "worst_tone_level_dbc": -58.026804693131425,
+      "margin_to_spec_db": -1.9731953068685755,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          784,
+          791
+        ],
+        "dbc": -58.026804693131425
+      }
+    },
+    {
+      "if1_hz": 2440000000.0,
+      "worst_tone_freq_hz": 28220000000.0,
+      "worst_tone_level_dbc": -57.568738174938986,
+      "margin_to_spec_db": -2.4312618250610143,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          791,
+          798
+        ],
+        "dbc": -57.56873817493899
+      }
+    },
+    {
+      "if1_hz": 2450000000.0,
+      "worst_tone_freq_hz": 28200000000.0,
+      "worst_tone_level_dbc": -57.652986572051546,
+      "margin_to_spec_db": -2.347013427948454,
+      "coincident": false,
+      "coincident_with_carrier_bin": false,
+      "has_unknown_contributors": false,
+      "unknown_contributors_count": 0,
+      "unknown_combining_mode": "ignore",
+      "top_contributor": {
+        "origin": "translated_residual",
+        "stage_path": "translated_residual -> if2_filter -> mixer2_translate -> rf_filter",
+        "dataset_id": "mixer1",
+        "family_id": {
+          "mode": "lo+if",
+          "kind": "spur",
+          "m": 2,
+          "n": 2,
+          "sign": -1,
+          "expression": "2*LO - 2*IF"
+        },
+        "lineage_row_indices": [
+          798
+        ],
+        "dbc": -57.652986572051546
+      }
+    }
+  ]
+}

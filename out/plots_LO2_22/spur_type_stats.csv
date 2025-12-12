@@ -1,0 +1,4 @@
+note,spur_type_raw,count,max_level_dbc
+Top spur types selected for legend: max_types=12,translated_residual | spur | 2*LO - 2*IF,98,-55.551105006445894
+Top spur types selected for legend: max_types=12,mixer2_family | spur | 2*LO - 2*IF,47,-65.592926562491
+Top spur types selected for legend: max_types=12,translated_residual | spur | 1*LO + 2*IF,6,-67.63528038197086
